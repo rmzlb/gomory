@@ -186,48 +186,49 @@ function packHorizontalFirst(
 
 /**
  * Compare horizontal-first vs vertical-first strategies
+ * TODO: Fix TypeScript issue with verticalResult type
  */
-export function compareStrategies(
-  specs: PieceSpec[],
-  config: OptimizationConfig
-): {
-  horizontalFirst: HorizontalPackResult
-  verticalFirst: { boards: BoardLayout[]; totalCuts: number } | null
-  recommendation: 'horizontal' | 'vertical' | 'equal'
-} {
-  // Run horizontal-first strategy
-  const horizontalResult = packHorizontalFirst(
-    config.boardWidth,
-    config.boardHeight,
-    specs,
-    config.kerf,
-    config.allowRotate,
-    config.objective
-  )
+// export function compareStrategies(
+//   specs: PieceSpec[],
+//   config: OptimizationConfig
+// ): {
+//   horizontalFirst: HorizontalPackResult
+//   verticalFirst: { boards: BoardLayout[]; totalCuts: number } | null
+//   recommendation: 'horizontal' | 'vertical' | 'equal'
+// } {
+//   // Run horizontal-first strategy
+//   const horizontalResult = packHorizontalFirst(
+//     config.boardWidth,
+//     config.boardHeight,
+//     specs,
+//     config.kerf,
+//     config.allowRotate,
+//     config.objective
+//   )
 
-  // For vertical-first, we would use the existing tryOneBoardTwoColumns
-  // This is a placeholder - would need to import and use the actual function
-  const verticalResult = null // Would call tryOneBoardTwoColumns here
+//   // For vertical-first, we would use the existing tryOneBoardTwoColumns
+//   // This is a placeholder - would need to import and use the actual function
+//   const verticalResult: { boards: BoardLayout[]; totalCuts: number } | null = null
 
-  // Determine recommendation based on cuts and utilization
-  let recommendation: 'horizontal' | 'vertical' | 'equal' = 'equal'
+//   // Determine recommendation based on cuts and utilization
+//   let recommendation: 'horizontal' | 'vertical' | 'equal' = 'equal'
   
-  if (verticalResult) {
-    if (horizontalResult.totalCuts < verticalResult.totalCuts) {
-      recommendation = 'horizontal'
-    } else if (verticalResult.totalCuts < horizontalResult.totalCuts) {
-      recommendation = 'vertical'
-    }
-  } else {
-    recommendation = 'horizontal'
-  }
+//   if (verticalResult) {
+//     if (horizontalResult.totalCuts < verticalResult.totalCuts) {
+//       recommendation = 'horizontal'
+//     } else if (verticalResult.totalCuts < horizontalResult.totalCuts) {
+//       recommendation = 'vertical'
+//     }
+//   } else {
+//     recommendation = 'horizontal'
+//   }
 
-  return {
-    horizontalFirst: horizontalResult,
-    verticalFirst: verticalResult,
-    recommendation
-  }
-}
+//   return {
+//     horizontalFirst: horizontalResult,
+//     verticalFirst: verticalResult,
+//     recommendation
+//   }
+// }
 
 /**
  * Advanced multi-stage optimization

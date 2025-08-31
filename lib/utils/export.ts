@@ -138,7 +138,8 @@ export async function exportBoardsAsPDF(
       
       pdf.setFontSize(10)
       pdf.text(`Utilization: ${((boards[i].utilization || 0) * 100).toFixed(1)}%`, margin, margin + 18)
-      pdf.text(`Pieces: ${boards[i].pieces.length}`, margin, margin + 24)
+      const pieceCount = boards[i].strips.reduce((sum, strip) => sum + strip.pieces.length, 0)
+      pdf.text(`Pieces: ${pieceCount}`, margin, margin + 24)
       
       // Get the board visualization element
       const boardElement = document.getElementById(`board-${i}`)

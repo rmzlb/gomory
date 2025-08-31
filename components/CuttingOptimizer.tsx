@@ -12,7 +12,7 @@ import PositioningReport from './PositioningReport'
 import VerificationCard from './VerificationCard'
 import TestsCard from './TestsCard'
 import ExportPanel from './ExportPanel'
-import type { PieceSpec, OptimizationConfig } from '@/lib/types'
+import type { PieceSpec, OptimizationConfig, OptimizationResult } from '@/lib/types'
 
 export default function CuttingOptimizer() {
   // Board configuration

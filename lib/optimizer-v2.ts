@@ -13,6 +13,8 @@ import type {
   OptimizationConfig 
 } from './types'
 
+import { computeCuts } from './optimizer'
+
 interface ColumnPackResult {
   success: boolean
   usedHeight: number
@@ -308,7 +310,7 @@ function countCutsForBoard(
   let count = 0
 
   // Vertical master cuts (column splits)
-  (board.columnSplits || []).forEach(x => {
+  ;(board.columnSplits || []).forEach(x => {
     const key = `V|${x}|0|${boardH}`
     if (!keySet.has(key)) {
       keySet.add(key)
@@ -365,7 +367,7 @@ export function tryOneBoardTwoColumnsOptimized(
   pieces: { id: string; width: number; height: number; rotated?: boolean; specId: string }[],
   config: OptimizationConfig
 ): BoardLayout & { utilization: number } {
-  const { boardWidth, boardHeight, kerf, allowRotation } = config
+  const { boardWidth, boardHeight, kerf, allowRotate } = config
   
   // Convert pieces to working format
   const items = pieces.map(p => ({
@@ -407,7 +409,7 @@ export function tryOneBoardTwoColumnsOptimized(
       leftWidth, 
       rightWidth, 
       kerf, 
-      allowRotation
+      allowRotate
     )
     
     if (!allocation.valid) {
@@ -441,7 +443,7 @@ export function tryOneBoardTwoColumnsOptimized(
       boardHeight,
       allocation.left,
       kerf,
-      allowRotation,
+      allowRotate,
       0
     )
 
@@ -467,7 +469,7 @@ export function tryOneBoardTwoColumnsOptimized(
       boardHeight,
       allocation.right,
       kerf,
-      allowRotation,
+      allowRotate,
       0
     )
 
@@ -517,8 +519,6 @@ export function tryOneBoardTwoColumnsOptimized(
     // No valid split found, return empty board
     return {
       index: 0,
-      pieces: [],
-      unusedPieces: pieces,
       strips: [],
       utilization: 0,
       width: boardWidth,
@@ -548,8 +548,6 @@ export function tryOneBoardTwoColumnsOptimized(
   const best = validEvals[0]
   return {
     index: 0,
-    pieces: best.placed,
-    unusedPieces: [],
     strips: best.strips,
     columnSplits: [best.splitX],
     utilization: best.utilization,
@@ -570,11 +568,11 @@ export function optimizeCuttingV2(
   let counter = 1
   
   for (const spec of pieces) {
-    for (let i = 0; i < spec.quantity; i++) {
+    for (let i = 0; i < spec.qty; i++) {
       expandedPieces.push({
         id: `piece-${counter++}`,
-        width: spec.width,
-        height: spec.height,
+        width: spec.w,
+        height: spec.h,
         specId: spec.id
       })
     }
@@ -586,14 +584,18 @@ export function optimizeCuttingV2(
   // Generate cuts
   const cuts = computeCuts([board], config.boardWidth, config.boardHeight, config.kerf)
   
+  // Extract all pieces from the board's strips
+  const allPieces: PlacedPiece[] = []
+  board.strips.forEach(strip => {
+    allPieces.push(...strip.pieces)
+  })
+
   return {
     boards: [board],
-    unusedPieces: board.unusedPieces || [],
-    totalBoards: 1,
+    allPieces,
     utilization: board.utilization,
     cuts
   }
 }
 
-// Re-export the original computeCuts function for compatibility
-export { computeCuts } from './optimizer'
+// computeCuts is imported from './optimizer' above
