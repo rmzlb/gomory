@@ -555,6 +555,16 @@ export function optimizeCutting(
 ): OptimizationResult {
   const validSpecs = specs.filter(s => s.w > 0 && s.h > 0 && s.qty > 0)
   
+  // Handle empty specs
+  if (validSpecs.length === 0) {
+    return {
+      boards: [],
+      allPieces: [],
+      cuts: [],
+      utilization: 0
+    }
+  }
+  
   let result
   if (config.forceTwoColumns) {
     const attempt = tryOneBoardTwoColumns(
