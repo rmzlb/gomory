@@ -2,8 +2,9 @@
 
 import { motion } from 'motion/react'
 import Link from 'next/link'
-import { useLanguage } from '@/contexts/LanguageContext'
+
 import Logo from '@/components/Logo'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function MethodologyPage() {
   const { t } = useLanguage()
@@ -236,9 +237,9 @@ export default function MethodologyPage() {
                 </div>
                 <div className="mt-4 bg-neutral-100 p-4">
                   <div className="space-y-2">
-                    <div className="bg-neutral-300 h-8"></div>
-                    <div className="bg-neutral-400 h-6"></div>
-                    <div className="bg-neutral-500 h-4"></div>
+                    <div className="bg-neutral-300 h-8" />
+                    <div className="bg-neutral-400 h-6" />
+                    <div className="bg-neutral-500 h-4" />
                   </div>
                 </div>
               </div>

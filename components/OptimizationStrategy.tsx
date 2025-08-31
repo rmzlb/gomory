@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { useLanguage } from '@/contexts/LanguageContext'
+import { useState } from 'react'
 
 export type CuttingStrategy = 'auto' | 'vertical-first' | 'horizontal-first' | 'two-columns'
 export type OptimizationPriority = 'cuts' | 'waste' | 'balanced'
@@ -22,7 +21,6 @@ export default function OptimizationStrategy({
   onPriorityChange,
   showAdvanced = false
 }: OptimizationStrategyProps) {
-  const { t } = useLanguage()
   const [isExpanded, setIsExpanded] = useState(false)
 
   const strategies = [

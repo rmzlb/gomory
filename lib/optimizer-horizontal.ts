@@ -28,7 +28,7 @@ function packHorizontalFirst(
   specs: PieceSpec[],
   kerf: number,
   allowRotate: boolean,
-  objective: 'waste' | 'cuts' | 'balanced' = 'balanced'
+  _objective: 'waste' | 'cuts' | 'balanced' = 'balanced'
 ): HorizontalPackResult {
   // Expand pieces
   const items: { specId: string; w: number; h: number; id: string }[] = []

@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
+import { motion, AnimatePresence } from 'motion/react'
+import { useState } from 'react'
+
 import type { OptimizationResult, PieceSpec } from '@/lib/types'
 
 interface ExportPanelProps {
@@ -72,7 +73,7 @@ export default function ExportPanel({
         pdf.text(`Planche #${bIndex + 1}:`, 25, yPos)
         yPos += 5
         
-        board.strips.forEach((strip, sIndex) => {
+        board.strips.forEach((strip) => {
           strip.pieces.forEach(piece => {
             pdf.text(
               `  - ${piece.id} (${piece.specId}): ${piece.w}×${piece.h} mm @ (${Math.round(piece.x)}, ${Math.round(piece.y)})${piece.rotated ? ' [Rotation 90°]' : ''}`,

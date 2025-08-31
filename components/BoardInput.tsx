@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
+import { useState, useEffect } from 'react'
 
 interface BoardInputProps {
   boardWidth: number

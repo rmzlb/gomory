@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'motion/react'
 import Link from 'next/link'
+
 import Logo from '@/components/Logo'
 import { useLanguage } from '@/contexts/LanguageContext'
 

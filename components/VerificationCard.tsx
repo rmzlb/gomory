@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+
 import type { OptimizationResult, PieceSpec } from '@/lib/types'
 
 interface VerificationCardProps {

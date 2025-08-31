@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+
 import Logo from '@/components/Logo'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { motion, AnimatePresence } from 'motion/react'
+
 
 export default function Navigation() {
   const pathname = usePathname()

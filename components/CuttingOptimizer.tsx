@@ -1,18 +1,20 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
-import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
+import { motion } from 'motion/react'
+import { useState } from 'react'
+
 import { optimizeCutting } from '@/lib/optimizer'
+
 import BoardInput from './BoardInput'
-import PieceInput from './PieceInput'
 import BoardVisualizer from './BoardVisualizer'
-import StatsDisplay from './StatsDisplay'
-import PositioningReport from './PositioningReport'
-import VerificationCard from './VerificationCard'
-import TestsCard from './TestsCard'
 import ExportPanel from './ExportPanel'
 import HowItWorks from './HowItWorks'
+import PieceInput from './PieceInput'
+import PositioningReport from './PositioningReport'
+import TestsCard from './TestsCard'
+import VerificationCard from './VerificationCard'
+
 import type { PieceSpec, OptimizationConfig, OptimizationResult } from '@/lib/types'
 
 export default function CuttingOptimizer() {
@@ -75,8 +77,6 @@ export default function CuttingOptimizer() {
     }, 500)
   }
 
-
-  const totalPieces = pieces.reduce((sum, p) => sum + p.qty, 0)
 
   const updateConfig = (updates: Partial<OptimizationConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }))

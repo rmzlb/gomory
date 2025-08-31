@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import { motion, AnimatePresence } from 'motion/react'
+import { useState } from 'react'
+
 import { getPieceColorBySpecId } from '@/lib/colors'
+
 import type { BoardLayout, Cut, PieceSpec } from '@/lib/types'
 
 interface BoardVisualizerProps {

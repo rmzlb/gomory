@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { BoardLayout } from '@/lib/types'
+
+import type { BoardLayout } from '@/lib/types'
 
 export interface ExportError {
   code: 'CANVAS_ERROR' | 'BLOB_ERROR' | 'DOWNLOAD_ERROR' | 'PDF_ERROR'

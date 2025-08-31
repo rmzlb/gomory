@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { useState } from 'react'
 
 export default function HowItWorks() {
   const [isExpanded, setIsExpanded] = useState(false)

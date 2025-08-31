@@ -3,17 +3,17 @@
  * Based on the research approach for minimizing cuts in two-stage guillotine
  */
 
+import { computeCuts } from './optimizer'
+
 import type { 
   PieceSpec, 
   PlacedPiece, 
   Strip, 
   BoardLayout, 
-  Cut,
   OptimizationResult,
   OptimizationConfig 
 } from './types'
 
-import { computeCuts } from './optimizer'
 
 interface ColumnPackResult {
   success: boolean

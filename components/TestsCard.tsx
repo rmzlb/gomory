@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+
 import type { OptimizationResult, PieceSpec, Strip, BoardLayout, PlacedPiece } from '@/lib/types'
 
 interface TestsCardProps {

@@ -1,4 +1,5 @@
 import { optimizeCutting } from '../optimizer'
+
 import type { PieceSpec, OptimizationConfig } from '../types'
 
 describe('optimizer', () => {
@@ -48,7 +49,7 @@ describe('optimizer', () => {
       const configWithoutRotation = { ...defaultConfig, allowRotate: false }
       
       const resultWithRotation = optimizeCutting(configWithRotation, pieces)
-      const resultWithoutRotation = optimizeCutting(configWithoutRotation, pieces)
+      const _resultWithoutRotation = optimizeCutting(configWithoutRotation, pieces)
       
       // With rotation should place the piece
       expect(resultWithRotation.allPieces.length).toBeGreaterThan(0)

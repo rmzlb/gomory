@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { useState } from 'react'
+
 import { getPieceColor } from '@/lib/colors'
+
 import type { PieceSpec } from '@/lib/types'
 
 interface PieceInputProps {
@@ -32,16 +34,6 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
     return initial
   })
   
-  // Track if we're on mobile
-  const [isMobile, setIsMobile] = useState(false)
-  
-  // Check if mobile on mount
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 640)
-    const handleResize = () => setIsMobile(window.innerWidth < 640)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
   const updatePiece = (id: string, field: keyof PieceSpec, value: string | number) => {
     if (field === 'id') {

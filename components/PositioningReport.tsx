@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+
 import type { BoardLayout, Cut } from '@/lib/types'
 
 interface PositioningReportProps {
