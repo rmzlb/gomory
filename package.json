@@ -1,0 +1,47 @@
+{
+  "name": "gomory",
+  "version": "1.0.0",
+  "description": "Two-stage guillotine cutting algorithm for material optimization",
+  "author": "@rmzlb",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmzlb/gomory.git"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,md,json}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "canvas-confetti": "^1.9.3",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.2",
+    "motion": "^11.15.0",
+    "next": "15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.0",
+    "postcss": "^8",
+    "typescript": "^5"
+  }
+}

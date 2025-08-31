@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-900: #171717;
+    
+    --color-red-400: #f87171;
+    --color-red-500: #ef4444;
+    --color-green-500: #22c55e;
+    --color-green-600: #16a34a;
+    
+    --transition-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  * {
+    @apply antialiased;
+  }
+  
+  html {
+    @apply bg-neutral-50;
+  }
+  
+  /* Smooth focus transitions */
+  input:focus,
+  button:focus,
+  select:focus {
+    @apply outline-none;
+  }
+  
+  /* Starting animations */
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
