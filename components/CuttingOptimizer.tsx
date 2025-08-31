@@ -12,6 +12,7 @@ import PositioningReport from './PositioningReport'
 import VerificationCard from './VerificationCard'
 import TestsCard from './TestsCard'
 import ExportPanel from './ExportPanel'
+import HowItWorks from './HowItWorks'
 import type { PieceSpec, OptimizationConfig, OptimizationResult } from '@/lib/types'
 
 export default function CuttingOptimizer() {
@@ -51,6 +52,16 @@ export default function CuttingOptimizer() {
       setResult(res)
       setIsCalculating(false)
       setShowResults(true)
+      
+      // Scroll to visualization on mobile devices
+      if (window.innerWidth < 1024) { // lg breakpoint
+        setTimeout(() => {
+          const visualizationElement = document.getElementById('visualization-area')
+          if (visualizationElement) {
+            visualizationElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 100)
+      }
       
       // Trigger confetti for good results
       if (res.utilization > 0.75) {
@@ -138,6 +149,9 @@ export default function CuttingOptimizer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* How it works explanation */}
+        <HowItWorks />
+        
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left sidebar - Controls */}
           <motion.aside 
@@ -216,6 +230,7 @@ export default function CuttingOptimizer() {
 
           {/* Main content - Visualization */}
           <motion.main
+            id="visualization-area"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
