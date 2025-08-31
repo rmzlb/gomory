@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { getPieceColor } from '@/lib/colors'
 import type { PieceSpec } from '@/lib/types'
@@ -31,6 +31,17 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
     })
     return initial
   })
+  
+  // Track if we're on mobile
+  const [isMobile, setIsMobile] = useState(false)
+  
+  // Check if mobile on mount
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640)
+    const handleResize = () => setIsMobile(window.innerWidth < 640)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const updatePiece = (id: string, field: keyof PieceSpec, value: string | number) => {
     if (field === 'id') {
@@ -129,10 +140,28 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium text-neutral-700">Pièces à découper</h3>
-        <div className="flex gap-3 text-xs text-neutral-500">
-          <span>{totalPieces} pièces</span>
-          <span>•</span>
-          <span>{(totalArea / 1000000).toFixed(2)} m²</span>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-2 text-xs text-neutral-500">
+            <span>{totalPieces} pièces</span>
+            <span>•</span>
+            <span>{(totalArea / 1000000).toFixed(2)} m²</span>
+          </div>
+          {pieces.length > 0 && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                if (confirm('Supprimer toutes les pièces ?')) {
+                  onChange([])
+                  setLocalValues({})
+                }
+              }}
+              className="text-xs text-neutral-400 hover:text-red-500 transition-colors"
+              aria-label="Effacer tout"
+            >
+              Effacer
+            </motion.button>
+          )}
         </div>
       </div>
 
@@ -177,67 +206,67 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
                 </div>
                 
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => removePiece(piece.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                  aria-label="Supprimer"
+                  className="p-2 rounded-lg bg-white border border-neutral-200
+                           hover:bg-red-50 hover:border-red-300 
+                           active:bg-red-100 transition-all
+                           sm:opacity-0 sm:group-hover:opacity-100"
+                  aria-label={`Supprimer pièce ${piece.id}`}
                 >
-                  <svg className="w-4 h-4 text-neutral-400 hover:text-red-500 transition-colors">
-                    <path 
-                      d="M6 18L18 6M6 6l12 12" 
-                      stroke="currentColor" 
-                      strokeWidth={1.5}
-                      strokeLinecap="round"
-                    />
+                  <svg className="w-4 h-4 text-neutral-500 hover:text-red-600 transition-colors" 
+                       fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </motion.button>
               </div>
 
               {/* Dimensions and Quantity */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 <div>
-                  <label className="text-xs text-neutral-500 block mb-1">Largeur</label>
-                  <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={localValues[piece.id]?.w || piece.w}
-                      onChange={(e) => updatePiece(piece.id, 'w', e.target.value)}
-                      onBlur={() => handleBlur(piece.id, 'w')}
-                      className="w-full px-2 py-1 bg-white border border-neutral-200 rounded
-                               focus:border-neutral-400 focus:outline-none transition-colors text-sm"
-                      placeholder="L"
-                    />
-                    <span className="text-xs text-neutral-400 ml-1">mm</span>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-xs text-neutral-500 block mb-1">Hauteur</label>
-                  <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={localValues[piece.id]?.h || piece.h}
-                      onChange={(e) => updatePiece(piece.id, 'h', e.target.value)}
-                      onBlur={() => handleBlur(piece.id, 'h')}
-                      className="w-full px-2 py-1 bg-white border border-neutral-200 rounded
-                               focus:border-neutral-400 focus:outline-none transition-colors text-sm"
-                      placeholder="H"
-                    />
-                    <span className="text-xs text-neutral-400 ml-1">mm</span>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-xs text-neutral-500 block mb-1">Quantité</label>
+                  <label className="text-xs text-neutral-500 block mb-0.5 sm:mb-1">L (mm)</label>
                   <input
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={localValues[piece.id]?.w || piece.w}
+                    onChange={(e) => updatePiece(piece.id, 'w', e.target.value)}
+                    onBlur={() => handleBlur(piece.id, 'w')}
+                    className="w-full px-1.5 sm:px-2 py-1 bg-white border border-neutral-200 rounded
+                             focus:border-neutral-400 focus:outline-none transition-colors text-sm"
+                    placeholder="Largeur"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-neutral-500 block mb-0.5 sm:mb-1">H (mm)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={localValues[piece.id]?.h || piece.h}
+                    onChange={(e) => updatePiece(piece.id, 'h', e.target.value)}
+                    onBlur={() => handleBlur(piece.id, 'h')}
+                    className="w-full px-1.5 sm:px-2 py-1 bg-white border border-neutral-200 rounded
+                             focus:border-neutral-400 focus:outline-none transition-colors text-sm"
+                    placeholder="Hauteur"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-neutral-500 block mb-0.5 sm:mb-1">Qté</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={localValues[piece.id]?.qty || piece.qty}
                     onChange={(e) => updatePiece(piece.id, 'qty', e.target.value)}
                     onBlur={() => handleBlur(piece.id, 'qty')}
-                    className="w-full px-2 py-1 bg-white border border-neutral-200 rounded
+                    className="w-full px-1.5 sm:px-2 py-1 bg-white border border-neutral-200 rounded
                              focus:border-neutral-400 focus:outline-none transition-colors text-sm"
-                    placeholder="Qt"
+                    placeholder="Quantité"
                   />
                 </div>
               </div>
