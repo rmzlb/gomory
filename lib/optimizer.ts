@@ -96,7 +96,16 @@ function packColumnShelves(
   return { success: true, usedHeight, placed, strips }
 }
 
-// Essai « 1 planche / 2-colonnes »
+// Essai « 1 planche / 2-colonnes » avec sélection intelligente du split
+interface SplitCandidate {
+  splitX: number
+  leftItems: { specId: string; w: number; h: number; id: string }[]
+  rightItems: { specId: string; w: number; h: number; id: string }[]
+  numCuts: number
+  totalSlack: number
+  utilization: number
+}
+
 function tryOneBoardTwoColumns(
   boardW: number,
   boardH: number,
@@ -122,6 +131,9 @@ function tryOneBoardTwoColumns(
     .filter(w => w > 0 && w < boardW - 50)
     .sort((a, b) => b - a)
 
+  // Evaluate ALL split candidates instead of taking first valid
+  const splitEvaluations: SplitCandidate[] = []
+  
   for (const splitX of candidates) {
     const colL = { x: 0, w: splitX }
     const colR = { x: splitX + kerf, w: boardW - splitX - kerf }
@@ -207,10 +219,104 @@ function tryOneBoardTwoColumns(
     if (placed.length !== items.length) continue
 
     board.strips = [...leftPack.strips, ...rightPack.strips].sort((a, b) => a.y - b.y || a.x - b.x)
-    return { boards: [board], allPieces: placed }
+    
+    // Calculate metrics for this split
+    const numCuts = countCutsForCandidate(board, boardW, boardH, kerf)
+    const totalSlack = calculateTotalSlack(board.strips)
+    const utilization = placed.reduce((sum, p) => sum + p.w * p.h, 0) / (boardW * boardH)
+    
+    splitEvaluations.push({
+      splitX,
+      leftItems: left,
+      rightItems: right,
+      numCuts,
+      totalSlack,
+      utilization
+    })
   }
+  
+  // Select best split based on multi-criteria
+  if (splitEvaluations.length === 0) return null
+  
+  splitEvaluations.sort((a, b) => {
+    // Priority 1: Minimize cuts
+    if (a.numCuts !== b.numCuts) return a.numCuts - b.numCuts
+    // Priority 2: Minimize slack
+    if (a.totalSlack !== b.totalSlack) return a.totalSlack - b.totalSlack
+    // Priority 3: Maximize utilization
+    return b.utilization - a.utilization
+  })
+  
+  // Re-run packing with best split
+  const best = splitEvaluations[0]
+  const bestBoard: BoardLayout = { 
+    index: 0, 
+    strips: [], 
+    width: boardW, 
+    height: boardH, 
+    columnSplits: [best.splitX] 
+  }
+  
+  const colL = { x: 0, w: best.splitX }
+  const colR = { x: best.splitX + kerf, w: boardW - best.splitX - kerf }
+  
+  const leftPack = packColumnShelves(bestBoard, colL.x, colL.w, boardH, best.leftItems, kerf, allowRotate, 0)
+  const rightPack = packColumnShelves(bestBoard, colR.x, colR.w, boardH, best.rightItems, kerf, allowRotate, 0)
+  
+  const finalPlaced = [...leftPack.placed, ...rightPack.placed]
+  bestBoard.strips = [...leftPack.strips, ...rightPack.strips].sort((a, b) => a.y - b.y || a.x - b.x)
+  
+  return { boards: [bestBoard], allPieces: finalPlaced }
+}
 
-  return null
+// Helper: Count cuts for a candidate board
+function countCutsForCandidate(board: BoardLayout, boardW: number, boardH: number, kerf: number): number {
+  let count = 0
+  const keySet = new Set<string>()
+  
+  // Column splits
+  ;(board.columnSplits || []).forEach(x => {
+    const key = `V|${x}`
+    if (!keySet.has(key)) {
+      keySet.add(key)
+      count++
+    }
+  })
+  
+  // Horizontal cuts
+  board.strips.forEach(strip => {
+    const y = strip.y + strip.height
+    if (y < boardH) {
+      const key = `H|${y}|${strip.x}|${strip.x + strip.width}`
+      if (!keySet.has(key)) {
+        keySet.add(key)
+        count++
+      }
+    }
+  })
+  
+  // Vertical cuts within strips
+  board.strips.forEach(strip => {
+    // Between pieces
+    for (let i = 0; i < strip.pieces.length - 1; i++) {
+      count++
+    }
+    // Closure cut if needed
+    const last = strip.pieces[strip.pieces.length - 1]
+    if (last && last.x + last.w < strip.x + strip.width - kerf) {
+      count++
+    }
+  })
+  
+  return count
+}
+
+// Helper: Calculate total slack
+function calculateTotalSlack(strips: Strip[]): number {
+  return strips.reduce((total, strip) => {
+    const slack = strip.width - strip.usedWidth
+    return total + slack
+  }, 0)
 }
 
 // Fallback : Guillotine bandes pleine largeur
