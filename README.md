@@ -1,9 +1,10 @@
 # Gomory - Cutting Optimizer
 
 <div align="center">
-  <img src="public/logo.svg" alt="Gomory Logo" width="120" height="120" />
   
-  <h3>Two-stage guillotine cutting algorithm for material optimization</h3>
+  # 🪚 Gomory
+  
+  ### Two-stage guillotine cutting algorithm for material optimization
   
   <p>
     <a href="https://github.com/rmzlb/gomory/actions"><img src="https://github.com/rmzlb/gomory/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
@@ -37,9 +38,21 @@
 
 Try the live demo at [gomory-optimizer.vercel.app](https://gomory-optimizer.vercel.app)
 
-<div align="center">
-  <img src="docs/screenshot.png" alt="Gomory Screenshot" width="600" />
-</div>
+### Key Features Preview:
+```
+┌──────────────────────────────────────┐
+│  Board: 2800 x 2070 mm               │
+│  ┌────┬─────────────────────┐        │
+│  │ A1 │     B1              │        │
+│  ├────┼─────────────────────┤        │
+│  │ A2 │     B2              │        │
+│  ├────┴─────────────────────┤        │
+│  │         C1                │        │
+│  └──────────────────────────┘        │
+│  Utilization: 85%                    │
+│  Cuts: 7 | Waste: 15%                │
+└──────────────────────────────────────┘
+```
 
 ## 📦 Installation
 
