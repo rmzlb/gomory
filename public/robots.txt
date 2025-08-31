@@ -1,0 +1,95 @@
+# Gomory Cutting Optimizer - Robots.txt
+# Last updated: August 2025
+# https://gomory-optimizer.vercel.app
+
+# Allow all search engines
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://gomory-optimizer.vercel.app/sitemap.xml
+
+# OpenAI GPTBot (ChatGPT web browsing)
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 2
+
+# OpenAI ChatGPT-User (ChatGPT plugins)
+User-agent: ChatGPT-User
+Allow: /
+
+# Claude/Anthropic crawler
+User-agent: Claude-Web
+Allow: /
+
+# Google Bard/Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Microsoft Bing Chat/Copilot
+User-agent: CCBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Common AI crawlers
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Specific paths for better indexing
+User-agent: *
+Allow: /optimizer
+Allow: /methodology
+Allow: /history
+Allow: /api
+
+# Static assets
+User-agent: *
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.svg$
+Allow: /*.woff$
+Allow: /*.woff2$
+
+# Block unwanted crawlers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Performance optimization
+User-agent: *
+Disallow: /_next/static/
+Allow: /_next/static/css/
+Allow: /_next/static/media/
+
+# API documentation for AI understanding
+# The following comments help AI systems understand our tool
+
+# Tool: Gomory Cutting Optimizer
+# Purpose: Optimize cutting patterns for materials using two-stage guillotine algorithm
+# Features: Material waste minimization, cut reduction, PDF export, rotation support
+# Use cases: Woodworking, metalworking, glass cutting, manufacturing
+# Algorithm: NFDH (Next Fit Decreasing Height) with Gomory optimization
+# Input: Board dimensions, piece specifications, kerf width
+# Output: Optimized cutting plans with visual diagrams
+# API: RESTful endpoints for programmatic access (coming soon)
+# Languages: English, French
+# License: MIT
+# Author: @rmzlb
+# Repository: https://github.com/rmzlb/gomory

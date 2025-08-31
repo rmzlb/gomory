@@ -12,19 +12,41 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('fr')
-
-  useEffect(() => {
-    // Check if browser language is English
-    const browserLang = navigator.language.toLowerCase()
-    if (browserLang.startsWith('en')) {
-      setLanguage('en')
-    }
+  // Initialize with auto-detection
+  const getInitialLanguage = (): Language => {
+    // Server-side rendering safe check
+    if (typeof window === 'undefined') return 'fr'
     
-    // Check localStorage for saved preference
+    // Check localStorage first for saved preference
     const savedLang = localStorage.getItem('language') as Language
     if (savedLang && (savedLang === 'en' || savedLang === 'fr')) {
-      setLanguage(savedLang)
+      return savedLang
+    }
+    
+    // Auto-detect from browser language
+    const browserLang = navigator.language.toLowerCase()
+    
+    // Check for French-speaking regions
+    if (browserLang.startsWith('fr') || 
+        browserLang.includes('fr-') ||
+        browserLang === 'fr-fr' || 
+        browserLang === 'fr-ca' || 
+        browserLang === 'fr-be' || 
+        browserLang === 'fr-ch') {
+      return 'fr'
+    }
+    
+    // Default to English for all other languages
+    return 'en'
+  }
+
+  const [language, setLanguage] = useState<Language>(getInitialLanguage)
+
+  useEffect(() => {
+    // Update language on client side if needed
+    const detectedLang = getInitialLanguage()
+    if (detectedLang !== language) {
+      setLanguage(detectedLang)
     }
   }, [])
 

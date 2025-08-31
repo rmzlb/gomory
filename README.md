@@ -9,7 +9,7 @@
     <a href="https://github.com/rmzlb/gomory/actions"><img src="https://github.com/rmzlb/gomory/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
     <a href="https://github.com/rmzlb/gomory/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
     <a href="https://github.com/rmzlb/gomory/releases"><img src="https://img.shields.io/github/v/release/rmzlb/gomory" alt="Version" /></a>
-    <a href="https://gomory.vercel.app"><img src="https://img.shields.io/badge/demo-live-green.svg" alt="Live Demo" /></a>
+    <a href="https://gomory-optimizer.vercel.app"><img src="https://img.shields.io/badge/demo-live-green.svg" alt="Live Demo" /></a>
   </p>
 
   <p>
@@ -35,7 +35,7 @@
 
 ## 🚀 Demo
 
-Try the live demo at [gomory.vercel.app](https://gomory.vercel.app)
+Try the live demo at [gomory-optimizer.vercel.app](https://gomory-optimizer.vercel.app)
 
 <div align="center">
   <img src="docs/screenshot.png" alt="Gomory Screenshot" width="600" />
