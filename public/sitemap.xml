@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
   <!-- Homepage -->
   <url>
@@ -12,12 +10,12 @@
     <priority>1.0</priority>
   </url>
   
-  <!-- Optimizer Tool (Main Application) -->
+  <!-- Optimizer Tool (Main functionality) -->
   <url>
     <loc>https://gomory-optimizer.vercel.app/optimizer</loc>
     <lastmod>2025-08-31</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>1.0</priority>
   </url>
   
   <!-- Methodology Page -->
@@ -25,7 +23,7 @@
     <loc>https://gomory-optimizer.vercel.app/methodology</loc>
     <lastmod>2025-08-31</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   
   <!-- History Page -->
@@ -33,7 +31,34 @@
     <loc>https://gomory-optimizer.vercel.app/history</loc>
     <lastmod>2025-08-31</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- API Endpoints (for documentation) -->
+  <url>
+    <loc>https://gomory-optimizer.vercel.app/api</loc>
+    <lastmod>2025-08-31</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  
+  <!-- Images for better indexing -->
+  <url>
+    <loc>https://gomory-optimizer.vercel.app/</loc>
+    <image:image>
+      <image:loc>https://gomory-optimizer.vercel.app/logo.png</image:loc>
+      <image:title>Gomory Cutting Optimizer Logo</image:title>
+      <image:caption>Advanced material cutting optimization tool</image:caption>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://gomory-optimizer.vercel.app/optimizer</loc>
+    <image:image>
+      <image:loc>https://gomory-optimizer.vercel.app/screenshot.png</image:loc>
+      <image:title>Gomory Optimizer Interface</image:title>
+      <image:caption>Visual cutting diagram with optimized piece placement</image:caption>
+    </image:image>
   </url>
   
 </urlset>

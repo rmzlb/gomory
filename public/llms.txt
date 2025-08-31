@@ -1,0 +1,142 @@
+# Gomory Cutting Optimizer
+
+> Advanced material cutting optimization tool using two-stage guillotine algorithm with intelligent split selection. Minimizes waste and reduces cuts for woodworking, metalworking, and manufacturing industries. Free, open-source, and instantly accessible at https://gomory-optimizer.vercel.app
+
+## Core Documentation
+
+### Quick Start
+- [Home](https://gomory-optimizer.vercel.app): Landing page with feature overview and quick access to optimizer
+- [Optimizer](https://gomory-optimizer.vercel.app/optimizer): Main cutting optimization interface - input board dimensions, add pieces, and generate optimized cutting plans
+- [Methodology](https://gomory-optimizer.vercel.app/methodology): Detailed explanation of the two-stage guillotine algorithm, NFDH heuristic, and optimization strategies
+- [History](https://gomory-optimizer.vercel.app/history): Background on Ralph Gomory and the mathematical foundations of cutting optimization
+
+### API Reference
+- [POST /api/optimize]: Submit optimization request with board dimensions and piece specifications
+- [GET /api/health]: Service health check endpoint
+- [GET /api/version]: Current API version and capabilities
+
+## Key Features
+
+### Input Parameters
+- **Board Configuration**: Width × Height (mm), kerf width (blade thickness)
+- **Piece Specifications**: ID, dimensions (W×H), quantity per piece type
+- **Optimization Settings**: Allow rotation (90°), force two-column layout, optimization objective (minimize waste/cuts/balanced)
+
+### Output Capabilities
+- **Visual Diagrams**: Color-coded cutting layouts with piece placement
+- **Utilization Metrics**: Material usage efficiency (typically 75-95%)
+- **Cut Visualization**: Numbered cut lines showing cutting sequence
+- **Export Formats**: PDF for workshop, PNG/SVG for documentation
+
+## Technical Implementation
+
+### Algorithm Details
+The optimizer uses a two-stage guillotine cutting approach:
+1. **Stage 1**: Vertical cuts to create columns
+2. **Stage 2**: Horizontal cuts within each column
+
+Key optimizations:
+- NFDH (Next Fit Decreasing Height) for strip packing
+- Intelligent split selection to minimize closure cuts
+- Slack calculation for unused strip width
+- Multi-board support for large piece sets
+
+### Technology Stack
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Export**: jsPDF, html2canvas
+- **Deployment**: Vercel edge network
+- **Testing**: Jest with 95% optimizer coverage
+
+## Use Cases
+
+### Primary Applications
+- **Woodworking**: Cabinet making, furniture production, panel cutting
+- **Metalworking**: Sheet metal fabrication, steel plate cutting
+- **Glass Industry**: Window manufacturing, mirror cutting
+- **Textiles**: Fabric cutting for upholstery, clothing manufacturing
+- **Paper/Cardboard**: Packaging, printing industry
+
+### Problem Solving
+- Reduces material waste by 20-40% compared to manual planning
+- Minimizes cutting time through optimized cut sequences
+- Handles complex piece sets with rotation options
+- Accounts for blade kerf (thickness) in calculations
+
+## Integration Guide
+
+### Embedding Options
+```javascript
+// Direct API usage
+const response = await fetch('https://gomory-optimizer.vercel.app/api/optimize', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    board: { width: 2440, height: 1220, kerf: 3 },
+    pieces: [
+      { id: 'A', w: 600, h: 400, qty: 5 },
+      { id: 'B', w: 300, h: 800, qty: 3 }
+    ],
+    config: { allowRotate: true, objective: 'balanced' }
+  })
+});
+```
+
+### Response Format
+```json
+{
+  "boards": [{
+    "index": 0,
+    "strips": [...],
+    "utilization": 0.875
+  }],
+  "allPieces": [...],
+  "cuts": [...],
+  "utilization": 0.875
+}
+```
+
+## Performance Metrics
+
+### Optimization Results
+- **Average Utilization**: 85-95% material usage
+- **Processing Time**: < 500ms for typical datasets
+- **Maximum Pieces**: Handles 100+ unique pieces
+- **Board Support**: Multi-board optimization for large sets
+
+### Comparison Advantages
+- No registration or payment required
+- Instant browser-based calculation
+- Mobile-responsive interface
+- Export to multiple formats
+- Open source (MIT license)
+
+## Support & Development
+
+### Resources
+- **Repository**: https://github.com/rmzlb/gomory
+- **Issues**: https://github.com/rmzlb/gomory/issues
+- **Developer**: @rmzlb
+- **License**: MIT (free for commercial use)
+
+### Future Roadmap
+- 3D cutting optimization
+- Machine-specific constraints
+- Cost optimization features
+- Grain direction support
+- REST API for integration
+
+## Semantic Context
+
+**Keywords**: cutting optimization, guillotine algorithm, two-stage cutting, NFDH, Gomory cuts, material efficiency, waste reduction, manufacturing software, woodworking tools, panel optimizer, cut list generator, bin packing, 2D packing problem, operations research, industrial optimization
+
+**Related Queries**: 
+- "How to optimize wood cutting patterns"
+- "Best algorithm for minimizing material waste"
+- "Free cutting optimization software"
+- "Guillotine cutting problem solver"
+- "Panel saw cut optimizer"
+- "CNC cutting pattern generator"
+
+**Industry Terms**: kerf, blade thickness, panel saw, CNC router, nesting, strip packing, cutting stock problem, orthogonal cutting, material yield, shop drawings

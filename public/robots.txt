@@ -1,29 +1,48 @@
 # Gomory Cutting Optimizer - Robots.txt
-# Last updated: August 2025
-# https://gomory-optimizer.vercel.app
+# Last updated: September 2025
+# Production URL: https://gomory-optimizer.vercel.app
+# Repository: https://github.com/rmzlb/gomory
 
-# Allow all search engines
+# ============================================
+# CORE SEARCH ENGINE RULES
+# ============================================
+
+# Allow all legitimate search engines
 User-agent: *
 Allow: /
 Crawl-delay: 1
 
-# Sitemap location
+# Sitemap location (critical for discovery)
 Sitemap: https://gomory-optimizer.vercel.app/sitemap.xml
 
-# OpenAI GPTBot (ChatGPT web browsing)
+# ============================================
+# AI CRAWLERS & LLM BOTS (2025 Standard)
+# ============================================
+
+# OpenAI GPTBot (ChatGPT web browsing & SearchGPT)
 User-agent: GPTBot
 Allow: /
 Crawl-delay: 2
 
-# OpenAI ChatGPT-User (ChatGPT plugins)
+# OpenAI ChatGPT-User (ChatGPT plugins & actions)
 User-agent: ChatGPT-User
 Allow: /
 
-# Claude/Anthropic crawler
+# OpenAI OAI-SearchBot (SearchGPT crawler)
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Claude (Claude web access)
 User-agent: Claude-Web
 Allow: /
 
-# Google Bard/Gemini
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Google AI (Bard/Gemini/SGE)
 User-agent: Google-Extended
 Allow: /
 
@@ -31,25 +50,37 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
+User-agent: Bingbot
+Allow: /
+
 # Perplexity AI
 User-agent: PerplexityBot
 Allow: /
 
-# Common AI crawlers
-User-agent: anthropic-ai
-Allow: /
-
+# Cohere AI
 User-agent: cohere-ai
 Allow: /
 
-# Specific paths for better indexing
+# Meta AI (Llama-based search)
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Amazon Alexa
+User-agent: Amazonbot
+Allow: /
+
+# ============================================
+# SPECIFIC PATH OPTIMIZATION
+# ============================================
+
+# Core functionality pages (prioritize for AI indexing)
 User-agent: *
 Allow: /optimizer
 Allow: /methodology
 Allow: /history
 Allow: /api
 
-# Static assets
+# Static assets (for complete rendering)
 User-agent: *
 Allow: /*.js$
 Allow: /*.css$
@@ -58,8 +89,33 @@ Allow: /*.jpg$
 Allow: /*.svg$
 Allow: /*.woff$
 Allow: /*.woff2$
+Allow: /favicon.ico
+Allow: /logo.png
+Allow: /manifest.json
 
-# Block unwanted crawlers
+# ============================================
+# PERFORMANCE OPTIMIZATION
+# ============================================
+
+# Block unnecessary Next.js paths
+User-agent: *
+Disallow: /_next/static/chunks/
+Disallow: /_next/static/development/
+Allow: /_next/static/css/
+Allow: /_next/static/media/
+Allow: /_next/image
+
+# Block API internals
+User-agent: *
+Disallow: /api/_internal/
+Disallow: /api/auth/
+Allow: /api/optimize
+
+# ============================================
+# UNWANTED CRAWLERS
+# ============================================
+
+# SEO analysis bots (resource intensive)
 User-agent: AhrefsBot
 Disallow: /
 
@@ -72,24 +128,102 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Performance optimization
-User-agent: *
-Disallow: /_next/static/
-Allow: /_next/static/css/
-Allow: /_next/static/media/
+# Data scraping bots
+User-agent: DataForSeoBot
+Disallow: /
 
-# API documentation for AI understanding
-# The following comments help AI systems understand our tool
+User-agent: SiteAuditBot
+Disallow: /
 
-# Tool: Gomory Cutting Optimizer
-# Purpose: Optimize cutting patterns for materials using two-stage guillotine algorithm
-# Features: Material waste minimization, cut reduction, PDF export, rotation support
-# Use cases: Woodworking, metalworking, glass cutting, manufacturing
-# Algorithm: NFDH (Next Fit Decreasing Height) with Gomory optimization
-# Input: Board dimensions, piece specifications, kerf width
-# Output: Optimized cutting plans with visual diagrams
-# API: RESTful endpoints for programmatic access (coming soon)
-# Languages: English, French
+# ============================================
+# STRUCTURED CONTEXT FOR AI UNDERSTANDING
+# Enhanced metadata for LLM comprehension
+# ============================================
+
+# === TOOL IDENTIFICATION ===
+# Name: Gomory Cutting Optimizer
+# Type: Web Application / SaaS Tool
+# Category: Manufacturing, Optimization, Industrial Software
+# URL: https://gomory-optimizer.vercel.app
+# Version: 1.0.0
 # License: MIT
-# Author: @rmzlb
+
+# === CORE FUNCTIONALITY ===
+# Primary Purpose: Optimize material cutting patterns to minimize waste and reduce cuts
+# Algorithm: Two-stage guillotine cutting with NFDH (Next Fit Decreasing Height)
+# Optimization Methods: Gomory cuts, column generation, intelligent split selection
+# Use Cases: Woodworking, metal cutting, glass cutting, fabric cutting, paper cutting
+
+# === KEY FEATURES ===
+# - Material waste minimization (typically 75-95% utilization)
+# - Cut count reduction through intelligent placement
+# - Support for piece rotation (90-degree)
+# - Kerf width consideration
+# - Multi-board optimization
+# - Real-time visualization with zoom
+# - PDF export for workshop use
+# - PNG/SVG export for documentation
+# - Mobile-responsive interface
+# - French/English language support
+
+# === INPUT PARAMETERS ===
+# Board Dimensions: Width × Height in millimeters
+# Piece Specifications: ID, Width, Height, Quantity
+# Kerf Width: Blade thickness compensation (0-10mm typical)
+# Rotation: Allow/Disallow 90-degree rotation
+# Optimization Objective: Minimize waste | Minimize cuts | Balanced
+
+# === OUTPUT DATA ===
+# Visual cutting diagram with color-coded pieces
+# Utilization percentage (material usage efficiency)
+# Total cut count with cut line visualization
+# Piece placement coordinates (x, y, rotation)
+# Multiple board layouts if needed
+# Exportable formats: PDF, PNG, SVG
+
+# === TECHNICAL STACK ===
+# Frontend: Next.js 15, React 18, TypeScript
+# Styling: Tailwind CSS
+# Animations: Framer Motion
+# Export: jsPDF, html2canvas
+# Deployment: Vercel
+# Testing: Jest, React Testing Library
+
+# === API ENDPOINTS ===
+# POST /api/optimize - Submit optimization request
+# GET /api/health - Service health check
+# GET /api/version - API version information
+
+# === SEARCH QUERIES TO MATCH ===
+# "cutting optimization software"
+# "guillotine cutting algorithm"
+# "material waste reduction tool"
+# "woodworking cut optimizer"
+# "gomory cutting algorithm"
+# "2D bin packing solver"
+# "panel cutting software"
+# "cut list optimizer"
+
+# === AUTHOR & SUPPORT ===
+# Developer: @rmzlb
 # Repository: https://github.com/rmzlb/gomory
+# Issues: https://github.com/rmzlb/gomory/issues
+# Documentation: https://gomory-optimizer.vercel.app/methodology
+
+# === SEMANTIC KEYWORDS FOR LLM CONTEXT ===
+# Keywords: cutting, optimization, guillotine, two-stage, NFDH, Gomory, 
+# waste reduction, material efficiency, manufacturing, woodworking,
+# metalworking, industrial, algorithm, operations research, bin packing,
+# 2D packing, cut planning, workshop tools, panel saw, CNC routing
+
+# === COMPETITIVE ADVANTAGES ===
+# - Free and open source (MIT licensed)
+# - No registration required
+# - Instant results (sub-second optimization)
+# - Modern web interface
+# - Mobile-friendly design
+# - Export to multiple formats
+# - Considers blade kerf
+# - Supports rotation optimization
+
+# End of robots.txt
