@@ -19,6 +19,6 @@ export function getPieceColor(index: number) {
 }
 
 export function getPieceColorBySpecId(specId: string, specs: Array<{ id: string }>) {
-  const index = specs.findIndex(s => s.id === specId)
+  const index = specs.findIndex((s) => s.id === specId)
   return index >= 0 ? getPieceColor(index) : pieceColors[0]
 }

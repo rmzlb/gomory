@@ -27,7 +27,7 @@ export default function BoardInput({
   allowRotate,
   forceTwoColumns,
   objective = 'balanced',
-  onChange
+  onChange,
 }: BoardInputProps) {
   // Local state for input values to allow empty strings during editing
   const [widthValue, setWidthValue] = useState(boardWidth.toString())
@@ -38,24 +38,22 @@ export default function BoardInput({
   useEffect(() => {
     setWidthValue(boardWidth.toString())
   }, [boardWidth])
-  
+
   useEffect(() => {
     setHeightValue(boardHeight.toString())
   }, [boardHeight])
-  
+
   useEffect(() => {
     setKerfValue(kerf.toString())
   }, [kerf])
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-medium text-neutral-600">Configuration planche</h3>
-      
+
       {/* Board dimensions */}
       <div className="space-y-3">
         <div>
-          <label className="text-xs text-neutral-500 block mb-1">
-            Largeur
-          </label>
+          <label className="mb-1 block text-xs text-neutral-500">Largeur</label>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -75,17 +73,14 @@ export default function BoardInput({
                   onChange({ boardWidth: num })
                 }
               }}
-              className="flex-1 px-3 py-1.5 bg-white border border-neutral-200 rounded-lg
-                         focus:border-neutral-400 transition-colors text-sm"
+              className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm transition-colors focus:border-neutral-400"
             />
             <span className="text-xs text-neutral-400">mm</span>
           </div>
         </div>
-        
+
         <div>
-          <label className="text-xs text-neutral-500 block mb-1">
-            Longueur
-          </label>
+          <label className="mb-1 block text-xs text-neutral-500">Longueur</label>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -105,17 +100,14 @@ export default function BoardInput({
                   onChange({ boardHeight: num })
                 }
               }}
-              className="flex-1 px-3 py-1.5 bg-white border border-neutral-200 rounded-lg
-                         focus:border-neutral-400 transition-colors text-sm"
+              className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm transition-colors focus:border-neutral-400"
             />
             <span className="text-xs text-neutral-400">mm</span>
           </div>
         </div>
-        
+
         <div>
-          <label className="text-xs text-neutral-500 block mb-1">
-            Trait de scie
-          </label>
+          <label className="mb-1 block text-xs text-neutral-500">Trait de scie</label>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -136,60 +128,56 @@ export default function BoardInput({
                   onChange({ kerf: num })
                 }
               }}
-              className="flex-1 px-3 py-1.5 bg-white border border-neutral-200 rounded-lg
-                         focus:border-neutral-400 transition-colors text-sm"
+              className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm transition-colors focus:border-neutral-400"
             />
             <span className="text-xs text-neutral-400">mm</span>
           </div>
         </div>
       </div>
-      
+
       {/* Options */}
-      <div className="space-y-3 pt-3 border-t border-neutral-100">
+      <div className="space-y-3 border-t border-neutral-100 pt-3">
         <div>
-          <label className="text-xs text-neutral-500 block mb-1">
+          <label className="mb-1 block text-xs text-neutral-500">
             Objectif d&apos;optimisation
           </label>
           <select
             value={objective}
             onChange={(e) => onChange({ objective: e.target.value as any })}
-            className="w-full px-3 py-1.5 bg-white border border-neutral-200 rounded-lg
-                     focus:border-neutral-400 transition-colors text-sm"
+            className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm transition-colors focus:border-neutral-400"
           >
             <option value="waste">Minimiser les chutes</option>
             <option value="balanced">Équilibré</option>
             <option value="cuts">Minimiser les coupes</option>
           </select>
         </div>
-        
-        <motion.label 
-          className="flex items-center gap-2 cursor-pointer group"
+
+        <motion.label
+          className="group flex cursor-pointer items-center gap-2"
           whileTap={{ scale: 0.98 }}
         >
           <input
             type="checkbox"
             checked={allowRotate}
             onChange={(e) => onChange({ allowRotate: e.target.checked })}
-            className="w-4 h-4 rounded border-neutral-300 text-neutral-900 
-                       focus:ring-0 focus:ring-offset-0"
+            className="h-4 w-4 rounded border-neutral-300 text-neutral-900 focus:ring-0 focus:ring-offset-0"
           />
-          <span className="text-sm text-neutral-600 group-hover:text-neutral-900 transition-colors">
+          <span className="text-sm text-neutral-600 transition-colors group-hover:text-neutral-900">
             Rotation 90°
           </span>
         </motion.label>
-        
-        <motion.label 
-          className="flex items-center gap-2 cursor-pointer group"
+
+        <motion.label
+          className="group flex cursor-pointer items-center gap-2"
           whileTap={{ scale: 0.98 }}
         >
           <input
             type="checkbox"
             checked={forceTwoColumns}
             onChange={(e) => onChange({ forceTwoColumns: e.target.checked })}
-            className="w-4 h-4 rounded border-neutral-300 text-neutral-900 
-                       focus:ring-0 focus:ring-offset-0"
+            className="h-4 w-4 rounded border-neutral-300 text-neutral-900 focus:ring-0 focus:ring-offset-0"
           />
-          <span className="text-sm text-neutral-600 group-hover:text-neutral-900 transition-colors">
+          <span className="text-sm text-neutral-600 transition-colors group-hover:text-neutral-900">
             Optimisation 2 colonnes
           </span>
         </motion.label>

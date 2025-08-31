@@ -10,9 +10,7 @@ describe('useNumericInput', () => {
   })
 
   it('should handle empty string when allowEmpty is true', () => {
-    const { result } = renderHook(() =>
-      useNumericInput(10, { allowEmpty: true })
-    )
+    const { result } = renderHook(() => useNumericInput(10, { allowEmpty: true }))
 
     act(() => {
       result.current.handleChange('')
@@ -46,9 +44,7 @@ describe('useNumericInput', () => {
 
   it('should clamp value to min on blur', () => {
     const onChange = jest.fn()
-    const { result } = renderHook(() =>
-      useNumericInput(10, { min: 5, onChange })
-    )
+    const { result } = renderHook(() => useNumericInput(10, { min: 5, onChange }))
 
     act(() => {
       result.current.handleChange('2')
@@ -64,9 +60,7 @@ describe('useNumericInput', () => {
 
   it('should clamp value to max on blur', () => {
     const onChange = jest.fn()
-    const { result } = renderHook(() =>
-      useNumericInput(10, { max: 20, onChange })
-    )
+    const { result } = renderHook(() => useNumericInput(10, { max: 20, onChange }))
 
     act(() => {
       result.current.handleChange('25')
@@ -117,9 +111,7 @@ describe('useNumericInput', () => {
 
   it('should force a value within bounds', () => {
     const onChange = jest.fn()
-    const { result } = renderHook(() =>
-      useNumericInput(10, { min: 0, max: 100, onChange })
-    )
+    const { result } = renderHook(() => useNumericInput(10, { min: 0, max: 100, onChange }))
 
     act(() => {
       result.current.forceValue(150)

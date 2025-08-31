@@ -16,26 +16,28 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const getInitialLanguage = (): Language => {
     // Server-side rendering safe check
     if (typeof window === 'undefined') return 'fr'
-    
+
     // Check localStorage first for saved preference
     const savedLang = localStorage.getItem('language') as Language
     if (savedLang && (savedLang === 'en' || savedLang === 'fr')) {
       return savedLang
     }
-    
+
     // Auto-detect from browser language
     const browserLang = navigator.language.toLowerCase()
-    
+
     // Check for French-speaking regions
-    if (browserLang.startsWith('fr') || 
-        browserLang.includes('fr-') ||
-        browserLang === 'fr-fr' || 
-        browserLang === 'fr-ca' || 
-        browserLang === 'fr-be' || 
-        browserLang === 'fr-ch') {
+    if (
+      browserLang.startsWith('fr') ||
+      browserLang.includes('fr-') ||
+      browserLang === 'fr-fr' ||
+      browserLang === 'fr-ca' ||
+      browserLang === 'fr-be' ||
+      browserLang === 'fr-ch'
+    ) {
       return 'fr'
     }
-    
+
     // Default to English for all other languages
     return 'en'
   }
@@ -58,14 +60,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const value = {
     language,
     setLanguage: handleSetLanguage,
-    t: translations[language]
+    t: translations[language],
   }
 
-  return (
-    <LanguageContext.Provider value={value}>
-      {children}
-    </LanguageContext.Provider>
-  )
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
 export function useLanguage() {

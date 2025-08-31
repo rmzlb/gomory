@@ -11,36 +11,36 @@ interface PositioningReportProps {
 
 export default function PositioningReport({ boards, cuts }: PositioningReportProps) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl border border-neutral-200 p-5"
+      className="rounded-xl border border-neutral-200 bg-white p-5"
     >
-      <h3 className="font-medium text-base mb-3">📝 Compte-rendu de positionnement</h3>
+      <h3 className="mb-3 text-base font-medium">📝 Compte-rendu de positionnement</h3>
       <div className="space-y-3 text-sm">
         {boards.map((b) => {
           const byColumn = new Map<string, typeof b.strips>()
-          b.strips.forEach(st => {
+          b.strips.forEach((st) => {
             const key = `${st.x}-${st.width}`
             if (!byColumn.has(key)) byColumn.set(key, [])
             byColumn.get(key)!.push(st)
           })
-          
+
           return (
             <div key={b.index} className="border-b border-neutral-100 pb-3 last:border-0">
-              <div className="font-medium mb-2">
+              <div className="mb-2 font-medium">
                 Planche #{b.index + 1} — {b.width} × {b.height} mm
               </div>
-              
+
               {[...byColumn.entries()]
                 .sort((a, b) => parseFloat(a[0].split('-')[0]) - parseFloat(b[0].split('-')[0]))
                 .map(([key, strips], idx) => {
                   const [sx, sw] = key.split('-').map(Number)
                   strips.sort((a, b) => a.y - b.y)
-                  
+
                   return (
-                    <div key={key} className="ml-3 mb-2">
-                      <div className="text-neutral-600 text-xs mb-1">
+                    <div key={key} className="mb-2 ml-3">
+                      <div className="mb-1 text-xs text-neutral-600">
                         Colonne {idx + 1}: X {sx} → {sx + sw} mm (largeur {sw} mm)
                       </div>
                       {strips.map((st, si) => (
@@ -49,10 +49,11 @@ export default function PositioningReport({ boards, cuts }: PositioningReportPro
                             • Bande {si + 1} @ Y={st.y} mm, hauteur {st.height} mm:
                           </div>
                           <div className="ml-3 text-xs">
-                            {st.pieces.map(p => (
+                            {st.pieces.map((p) => (
                               <div key={p.id} className="text-neutral-400">
                                 – {p.id} ({p.specId}) {p.rotated ? '↻ ' : ''}
-                                {Math.round(p.w)}×{Math.round(p.h)} mm @ ({Math.round(p.x)}, {Math.round(p.y)})
+                                {Math.round(p.w)}×{Math.round(p.h)} mm @ ({Math.round(p.x)},{' '}
+                                {Math.round(p.y)})
                               </div>
                             ))}
                           </div>
@@ -61,9 +62,9 @@ export default function PositioningReport({ boards, cuts }: PositioningReportPro
                     </div>
                   )
                 })}
-              
+
               <div className="mt-2 text-xs text-neutral-500">
-                Coupes sur la planche: {cuts.filter(c => c.boardIndex === b.index).length}
+                Coupes sur la planche: {cuts.filter((c) => c.boardIndex === b.index).length}
               </div>
             </div>
           )

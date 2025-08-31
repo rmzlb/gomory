@@ -12,10 +12,7 @@ interface UseNumericInputOptions {
  * Custom hook for managing numeric input state with validation
  * Handles empty states during editing and validates on blur
  */
-export function useNumericInput(
-  initialValue: number,
-  options: UseNumericInputOptions = {}
-) {
+export function useNumericInput(initialValue: number, options: UseNumericInputOptions = {}) {
   const {
     min = 0,
     max = Number.MAX_SAFE_INTEGER,
@@ -32,30 +29,33 @@ export function useNumericInput(
     setValue(initialValue.toString())
   }, [initialValue])
 
-  const handleChange = useCallback((newValue: string) => {
-    // Allow empty string during editing
-    if (allowEmpty && newValue === '') {
-      setValue('')
-      setIsValid(true)
-      return
-    }
+  const handleChange = useCallback(
+    (newValue: string) => {
+      // Allow empty string during editing
+      if (allowEmpty && newValue === '') {
+        setValue('')
+        setIsValid(true)
+        return
+      }
 
-    // Allow valid numeric input
-    if (/^\d*\.?\d*$/.test(newValue)) {
-      setValue(newValue)
-      setIsValid(true)
-    }
-  }, [allowEmpty])
+      // Allow valid numeric input
+      if (/^\d*\.?\d*$/.test(newValue)) {
+        setValue(newValue)
+        setIsValid(true)
+      }
+    },
+    [allowEmpty]
+  )
 
   const handleBlur = useCallback(() => {
     let numValue = parseFloat(value)
-    
+
     // Handle empty or invalid input
     if (value === '' || isNaN(numValue)) {
       numValue = defaultValue
       setValue(defaultValue.toString())
     }
-    
+
     // Clamp to min/max
     if (numValue < min) {
       numValue = min
@@ -64,12 +64,12 @@ export function useNumericInput(
       numValue = max
       setValue(max.toString())
     }
-    
+
     // Notify parent of valid change
     if (onChange && numValue !== initialValue) {
       onChange(numValue)
     }
-    
+
     setIsValid(true)
   }, [value, min, max, defaultValue, initialValue, onChange])
 
@@ -78,13 +78,16 @@ export function useNumericInput(
     setIsValid(true)
   }, [initialValue])
 
-  const forceValue = useCallback((newValue: number) => {
-    const clampedValue = Math.max(min, Math.min(max, newValue))
-    setValue(clampedValue.toString())
-    if (onChange) {
-      onChange(clampedValue)
-    }
-  }, [min, max, onChange])
+  const forceValue = useCallback(
+    (newValue: number) => {
+      const clampedValue = Math.max(min, Math.min(max, newValue))
+      setValue(clampedValue.toString())
+      if (onChange) {
+        onChange(clampedValue)
+      }
+    },
+    [min, max, onChange]
+  )
 
   return {
     value,

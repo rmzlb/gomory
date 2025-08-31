@@ -2,14 +2,14 @@
 
 export type PieceSpec = {
   id: string
-  w: number  // largeur en mm
-  h: number  // hauteur en mm
+  w: number // largeur en mm
+  h: number // hauteur en mm
   qty: number
 }
 
 export type PlacedPiece = {
-  id: string       // #1, #2, ...
-  specId: string   // référence de la pièce
+  id: string // #1, #2, ...
+  specId: string // référence de la pièce
   w: number
   h: number
   rotated: boolean
@@ -20,10 +20,10 @@ export type PlacedPiece = {
 }
 
 export type Strip = {
-  x: number         // origine X de la bande
-  width: number     // largeur utile de la bande
-  y: number         // top Y de la bande
-  height: number    // hauteur de la bande
+  x: number // origine X de la bande
+  width: number // largeur utile de la bande
+  y: number // top Y de la bande
+  height: number // hauteur de la bande
   pieces: PlacedPiece[]
   usedWidth: number // largeur utilisée
 }
@@ -34,7 +34,7 @@ export type BoardLayout = {
   width: number
   height: number
   columnSplits?: number[] // positions X des scissions verticales
-  utilization?: number    // board utilization ratio
+  utilization?: number // board utilization ratio
 }
 
 export type Cut = {

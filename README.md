@@ -44,8 +44,9 @@ Try the live demo at [gomory-optimizer.vercel.app](https://gomory-optimizer.verc
 </div>
 
 ### Features in Action:
+
 - 📐 Visual board layout with color-coded pieces
-- ✂️ Red dashed lines showing optimal cut positions  
+- ✂️ Red dashed lines showing optimal cut positions
 - 📊 Real-time utilization statistics
 - 📱 Fully responsive interface
 
@@ -53,7 +54,7 @@ Try the live demo at [gomory-optimizer.vercel.app](https://gomory-optimizer.verc
 
 ### Prerequisites
 
-- Node.js 20+ 
+- Node.js 20+
 - npm or yarn or pnpm
 
 ### Quick Start
@@ -125,13 +126,13 @@ const result = await optimizeCutting({
   board: { width: 2800, height: 2070 },
   pieces: [
     { width: 600, height: 400, quantity: 5 },
-    { width: 800, height: 300, quantity: 3 }
+    { width: 800, height: 300, quantity: 3 },
   ],
   options: {
     kerf: 3,
     allowRotation: true,
-    objective: 'waste'
-  }
+    objective: 'waste',
+  },
 })
 
 console.log(`Utilization: ${result.utilization}%`)
@@ -179,7 +180,7 @@ Subject to:
 ## 📊 Performance
 
 | Pieces | Time | Memory | Utilization |
-|--------|------|--------|-------------|
+| ------ | ---- | ------ | ----------- |
 | 10     | 8ms  | 2MB    | 82%         |
 | 100    | 45ms | 8MB    | 78%         |
 | 1000   | 95ms | 35MB   | 75%         |

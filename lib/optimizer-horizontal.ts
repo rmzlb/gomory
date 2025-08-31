@@ -4,13 +4,7 @@
  * This can sometimes reduce the total number of cuts by aligning vertical cuts across the board
  */
 
-import type { 
-  PieceSpec, 
-  PlacedPiece, 
-  Strip, 
-  BoardLayout,
-  OptimizationConfig
-} from './types'
+import type { PieceSpec, PlacedPiece, Strip, BoardLayout, OptimizationConfig } from './types'
 
 interface HorizontalPackResult {
   boards: BoardLayout[]
@@ -35,38 +29,39 @@ function packHorizontalFirst(
   let counter = 1
   for (const spec of specs) {
     for (let i = 0; i < spec.qty; i++) {
-      items.push({ 
-        specId: spec.id, 
-        w: spec.w, 
-        h: spec.h, 
-        id: `#${counter++}` 
+      items.push({
+        specId: spec.id,
+        w: spec.w,
+        h: spec.h,
+        id: `#${counter++}`,
       })
     }
   }
 
   // Group items by height for better strip formation
   const heightGroups = new Map<number, typeof items>()
-  
-  items.forEach(item => {
+
+  items.forEach((item) => {
     // Consider both orientations if rotation allowed
     const heights = [item.h]
     if (allowRotate) heights.push(item.w)
-    
+
     // Find best height that fits
     let bestHeight = -1
     let bestOrientation = { w: item.w, h: item.h, rotated: false }
-    
+
     for (const h of heights) {
       if (h <= boardH) {
         if (bestHeight === -1 || h > bestHeight) {
           bestHeight = h
-          bestOrientation = h === item.h 
-            ? { w: item.w, h: item.h, rotated: false }
-            : { w: item.h, h: item.w, rotated: true }
+          bestOrientation =
+            h === item.h
+              ? { w: item.w, h: item.h, rotated: false }
+              : { w: item.h, h: item.w, rotated: true }
         }
       }
     }
-    
+
     if (bestHeight > 0) {
       if (!heightGroups.has(bestHeight)) {
         heightGroups.set(bestHeight, [])
@@ -74,14 +69,14 @@ function packHorizontalFirst(
       heightGroups.get(bestHeight)!.push({
         ...item,
         w: bestOrientation.w,
-        h: bestOrientation.h
+        h: bestOrientation.h,
       })
     }
   })
 
   // Sort height groups by decreasing height
   const sortedHeights = Array.from(heightGroups.keys()).sort((a, b) => b - a)
-  
+
   const boards: BoardLayout[] = []
   const allPieces: PlacedPiece[] = []
   let currentBoard: BoardLayout | null = null
@@ -93,7 +88,7 @@ function packHorizontalFirst(
       strips: [],
       width: boardW,
       height: boardH,
-      columnSplits: []
+      columnSplits: [],
     }
     boards.push(board)
     currentY = 0
@@ -103,15 +98,15 @@ function packHorizontalFirst(
   // Process each height group
   for (const stripHeight of sortedHeights) {
     const itemsInGroup = heightGroups.get(stripHeight)!
-    
+
     // Sort items in group by width (descending) for better packing
     itemsInGroup.sort((a, b) => b.w - a.w)
-    
+
     while (itemsInGroup.length > 0) {
       if (!currentBoard || currentY + stripHeight > boardH) {
         currentBoard = createNewBoard()
       }
-      
+
       // Create a new strip
       const strip: Strip = {
         x: 0,
@@ -119,30 +114,30 @@ function packHorizontalFirst(
         y: currentY,
         height: stripHeight,
         pieces: [],
-        usedWidth: 0
+        usedWidth: 0,
       }
-      
+
       // Pack items into the strip
       let stripX = 0
       const piecesInStrip: PlacedPiece[] = []
-      
+
       for (let i = 0; i < itemsInGroup.length; ) {
         const item = itemsInGroup[i]
         const needWidth = stripX === 0 ? item.w : item.w + kerf
-        
+
         if (stripX + needWidth <= boardW) {
           const piece: PlacedPiece = {
             id: item.id,
             specId: item.specId,
             w: item.w,
             h: item.h,
-            rotated: item.w !== specs.find(s => s.id === item.specId)?.w,
+            rotated: item.w !== specs.find((s) => s.id === item.specId)?.w,
             x: stripX === 0 ? 0 : stripX + kerf,
             y: currentY,
             boardIndex: currentBoard.index,
-            stripIndex: currentBoard.strips.length
+            stripIndex: currentBoard.strips.length,
           }
-          
+
           piecesInStrip.push(piece)
           allPieces.push(piece)
           stripX = piece.x + piece.w
@@ -151,7 +146,7 @@ function packHorizontalFirst(
           i++
         }
       }
-      
+
       if (piecesInStrip.length > 0) {
         strip.pieces = piecesInStrip
         strip.usedWidth = stripX
@@ -165,15 +160,15 @@ function packHorizontalFirst(
 
   // Calculate total cuts
   let totalCuts = 0
-  boards.forEach(board => {
+  boards.forEach((board) => {
     // Horizontal cuts (one per strip except last)
     totalCuts += Math.max(0, board.strips.length - 1)
-    
+
     // Vertical cuts within strips
-    board.strips.forEach(strip => {
+    board.strips.forEach((strip) => {
       // Cuts between pieces
       totalCuts += Math.max(0, strip.pieces.length - 1)
-      
+
       // Closure cut if strip doesn't use full width
       if (strip.usedWidth < boardW - kerf) {
         totalCuts++
@@ -212,7 +207,7 @@ function packHorizontalFirst(
 
 //   // Determine recommendation based on cuts and utilization
 //   let recommendation: 'horizontal' | 'vertical' | 'equal' = 'equal'
-  
+
 //   if (verticalResult) {
 //     if (horizontalResult.totalCuts < verticalResult.totalCuts) {
 //       recommendation = 'horizontal'
@@ -262,7 +257,7 @@ export function optimizeMultiStage(
     strategy: 'horizontal',
     boards: horizontal.boards,
     totalCuts: horizontal.totalCuts,
-    utilization
+    utilization,
   }
 }
 
@@ -275,8 +270,8 @@ export function analyzePatterns(specs: PieceSpec[]): {
   recommendation: string
 } {
   const patterns = new Map<string, { width: number; height: number; count: number }>()
-  
-  specs.forEach(spec => {
+
+  specs.forEach((spec) => {
     const key = `${spec.w}x${spec.h}`
     const existing = patterns.get(key) || { width: spec.w, height: spec.h, count: 0 }
     existing.count += spec.qty
@@ -284,8 +279,7 @@ export function analyzePatterns(specs: PieceSpec[]): {
   })
 
   // Sort patterns by count
-  const sortedPatterns = Array.from(patterns.entries())
-    .sort((a, b) => b[1].count - a[1].count)
+  const sortedPatterns = Array.from(patterns.entries()).sort((a, b) => b[1].count - a[1].count)
 
   let recommendation = ''
   if (sortedPatterns.length > 0 && sortedPatterns[0][1].count > 5) {

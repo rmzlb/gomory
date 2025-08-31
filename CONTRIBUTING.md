@@ -101,6 +101,7 @@ git commit -m "chore(deps): update dependencies"
 ```
 
 Types:
+
 - **feat**: New feature
 - **fix**: Bug fix
 - **docs**: Documentation changes
@@ -131,9 +132,7 @@ Then create a Pull Request on GitHub using our PR template.
 // Good
 export function calculateUtilization(board: BoardLayout): number {
   const totalArea = board.width * board.height
-  const usedArea = board.pieces.reduce((sum, piece) => 
-    sum + piece.width * piece.height, 0
-  )
+  const usedArea = board.pieces.reduce((sum, piece) => sum + piece.width * piece.height, 0)
   return usedArea / totalArea
 }
 
@@ -141,8 +140,8 @@ export function calculateUtilization(board: BoardLayout): number {
 export function calc(b: any) {
   let t = b.w * b.h
   let u = 0
-  for(let p of b.p) u += p.w * p.h
-  return u/t
+  for (let p of b.p) u += p.w * p.h
+  return u / t
 }
 ```
 
@@ -161,11 +160,7 @@ interface ButtonProps {
 
 export function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
   return (
-    <button 
-      onClick={onClick}
-      className={`btn btn-${variant}`}
-      type="button"
-    >
+    <button onClick={onClick} className={`btn btn-${variant}`} type="button">
       {label}
     </button>
   )
@@ -208,7 +203,7 @@ describe('optimizeCutting', () => {
   it('should place all pieces when board is large enough', () => {
     // Test implementation
   })
-  
+
   it('should handle rotation when enabled', () => {
     // Test implementation
   })
@@ -234,6 +229,7 @@ describe('optimizeCutting', () => {
 ## 🎉 Recognition
 
 Contributors will be:
+
 - Added to the contributors list
 - Mentioned in release notes
 - Eligible for special contributor badge

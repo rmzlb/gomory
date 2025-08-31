@@ -7,25 +7,52 @@ interface LogoProps {
 
 export default function Logo({ size = 32, className = '' }: LogoProps) {
   return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 32 32" 
-      fill="none" 
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
       {/* Minimalist geometric representation of cutting optimization */}
       {/* Main square */}
       <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1.5" />
-      
+
       {/* Vertical cut */}
-      <line x1="16" y1="4" x2="16" y2="28" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.6" />
-      
+      <line
+        x1="16"
+        y1="4"
+        x2="16"
+        y2="28"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="2 2"
+        opacity="0.6"
+      />
+
       {/* Horizontal cuts */}
-      <line x1="4" y1="12" x2="16" y2="12" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.6" />
-      <line x1="16" y1="20" x2="28" y2="20" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.6" />
-      
+      <line
+        x1="4"
+        y1="12"
+        x2="16"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="2 2"
+        opacity="0.6"
+      />
+      <line
+        x1="16"
+        y1="20"
+        x2="28"
+        y2="20"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="2 2"
+        opacity="0.6"
+      />
+
       {/* Optimized pieces - filled rectangles */}
       <rect x="6" y="6" width="8" height="4" fill="currentColor" opacity="0.2" />
       <rect x="6" y="14" width="8" height="12" fill="currentColor" opacity="0.15" />
@@ -38,11 +65,11 @@ export default function Logo({ size = 32, className = '' }: LogoProps) {
 export function LogoMark({ size = 24, className = '' }: LogoProps) {
   // Even simpler version for small spaces
   return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >

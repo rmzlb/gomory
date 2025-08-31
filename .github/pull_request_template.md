@@ -19,6 +19,7 @@
 ## 🔗 Related Issue
 
 <!-- Link to the issue this PR addresses -->
+
 Fixes #(issue number)
 
 ## 💭 Motivation and Context
@@ -53,9 +54,10 @@ Fixes #(issue number)
 - [ ] Tested on mobile devices (if applicable)
 
 ### Test Configuration
-- **OS**: 
-- **Browser**: 
-- **Node version**: 
+
+- **OS**:
+- **Browser**:
+- **Node version**:
 
 ## 📝 Additional Notes
 
@@ -65,9 +67,9 @@ Fixes #(issue number)
 
 <!-- Help reviewers by pointing out specific areas that need attention -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ---
 

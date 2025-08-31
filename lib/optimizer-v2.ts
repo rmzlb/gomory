@@ -5,15 +5,14 @@
 
 import { computeCuts } from './optimizer'
 
-import type { 
-  PieceSpec, 
-  PlacedPiece, 
-  Strip, 
-  BoardLayout, 
+import type {
+  PieceSpec,
+  PlacedPiece,
+  Strip,
+  BoardLayout,
   OptimizationResult,
-  OptimizationConfig 
+  OptimizationConfig,
 } from './types'
-
 
 interface ColumnPackResult {
   success: boolean
@@ -49,17 +48,17 @@ function packColumnShelvesEnhanced(
   startingY = 0
 ): ColumnPackResult {
   // Try each orientation and pick the one maximizing height (NFDH principle)
-  const sortable = items.map(it => {
+  const sortable = items.map((it) => {
     const orientations = [{ w: it.w, h: it.h, rot: false }]
     if (allowRotate) {
       orientations.push({ w: it.h, h: it.w, rot: true })
     }
-    
-    const feasible = orientations.filter(o => o.w <= colW)
+
+    const feasible = orientations.filter((o) => o.w <= colW)
     if (feasible.length === 0) {
       return { ...it, w: it.w, h: it.h, rot: false, keyH: -1 }
     }
-    
+
     // Choose orientation with maximum height for better strip packing
     feasible.sort((a, b) => b.h - a.h)
     const best = feasible[0]
@@ -67,15 +66,15 @@ function packColumnShelvesEnhanced(
   })
 
   // Filter out items that can't fit
-  const fittable = sortable.filter(s => s.keyH !== -1)
+  const fittable = sortable.filter((s) => s.keyH !== -1)
   if (fittable.length !== sortable.length) {
-    return { 
-      success: false, 
-      usedHeight: 0, 
-      placed: [], 
-      strips: [], 
+    return {
+      success: false,
+      usedHeight: 0,
+      placed: [],
+      strips: [],
       slackTotal: 0,
-      closureCuts: 0 
+      closureCuts: 0,
     }
   }
 
@@ -96,7 +95,7 @@ function packColumnShelvesEnhanced(
   while (remaining.length > 0) {
     const stripHeight = remaining[0].h
     const stripItems: typeof remaining = []
-    
+
     // Collect all items that fit in this strip height
     for (let i = 0; i < remaining.length; ) {
       if (remaining[i].h <= stripHeight) {
@@ -109,11 +108,11 @@ function packColumnShelvesEnhanced(
     // Pack items horizontally in the strip
     let usedWidth = 0
     const stripPieces: PlacedPiece[] = []
-    
+
     for (let i = 0; i < stripItems.length; ) {
       const item = stripItems[i]
       const needWidth = usedWidth === 0 ? item.w : item.w + kerf
-      
+
       if (colX + usedWidth + needWidth <= colX + colW) {
         const px = colX + (usedWidth === 0 ? 0 : usedWidth + kerf)
         const piece: PlacedPiece = {
@@ -128,7 +127,7 @@ function packColumnShelvesEnhanced(
           stripIndex: strips.length,
         }
         stripPieces.push(piece)
-        usedWidth = (px - colX) + item.w
+        usedWidth = px - colX + item.w
         i++
       } else {
         // Item doesn't fit, try in next strip
@@ -141,7 +140,7 @@ function packColumnShelvesEnhanced(
     // Calculate slack for this strip
     const stripSlack = colW - usedWidth
     slackTotal += stripSlack
-    
+
     // Check if we need a closure cut (strip doesn't reach right edge)
     if (stripSlack > kerf) {
       closureCuts++
@@ -153,36 +152,37 @@ function packColumnShelvesEnhanced(
       y,
       height: stripHeight,
       pieces: stripPieces,
-      usedWidth
+      usedWidth,
     }
-    
+
     strips.push(strip)
     placed.push(...stripPieces)
 
     y = y + stripHeight + kerf
     if (y > boardH + 1e-6) {
-      return { 
-        success: false, 
-        usedHeight: 0, 
-        placed: [], 
-        strips: [], 
+      return {
+        success: false,
+        usedHeight: 0,
+        placed: [],
+        strips: [],
         slackTotal: 0,
-        closureCuts: 0 
+        closureCuts: 0,
       }
     }
   }
 
-  const usedHeight = strips.length === 0 
-    ? 0 
-    : (strips[strips.length - 1].y + strips[strips.length - 1].height - startingY)
+  const usedHeight =
+    strips.length === 0
+      ? 0
+      : strips[strips.length - 1].y + strips[strips.length - 1].height - startingY
 
-  return { 
-    success: true, 
-    usedHeight, 
-    placed, 
-    strips, 
+  return {
+    success: true,
+    usedHeight,
+    placed,
+    strips,
     slackTotal,
-    closureCuts 
+    closureCuts,
   }
 }
 
@@ -198,67 +198,62 @@ function simulateColumnAllocation(
 ): { left: typeof items; right: typeof items; valid: boolean } {
   const left: typeof items = []
   const right: typeof items = []
-  
+
   // Sort items by size for better packing
-  const sorted = [...items].sort((a, b) => 
-    Math.max(b.w, b.h) - Math.max(a.w, a.h)
-  )
+  const sorted = [...items].sort((a, b) => Math.max(b.w, b.h) - Math.max(a.w, a.h))
 
   // Track simulated height for each column
-  type SimState = { 
+  type SimState = {
     totalHeight: number
     currentRowHeight: number
     currentRowRemaining: number
   }
-  
-  const simLeft: SimState = { 
-    totalHeight: 0, 
-    currentRowHeight: 0, 
-    currentRowRemaining: leftWidth 
-  }
-  
-  const simRight: SimState = { 
-    totalHeight: 0, 
-    currentRowHeight: 0, 
-    currentRowRemaining: rightWidth 
+
+  const simLeft: SimState = {
+    totalHeight: 0,
+    currentRowHeight: 0,
+    currentRowRemaining: leftWidth,
   }
 
-  function getBestOrientation(width: number, item: {w: number; h: number}) {
+  const simRight: SimState = {
+    totalHeight: 0,
+    currentRowHeight: 0,
+    currentRowRemaining: rightWidth,
+  }
+
+  function getBestOrientation(width: number, item: { w: number; h: number }) {
     const orientations = [{ w: item.w, h: item.h }]
     if (allowRotate) {
       orientations.push({ w: item.h, h: item.w })
     }
-    const feasible = orientations.filter(o => o.w <= width)
+    const feasible = orientations.filter((o) => o.w <= width)
     if (feasible.length === 0) return null
     // Prefer orientation with max height for better strip packing
     return feasible.sort((a, b) => b.h - a.h)[0]
   }
 
   function simulateAdd(
-    state: SimState, 
-    colWidth: number, 
-    dims: {w: number; h: number}
+    state: SimState,
+    colWidth: number,
+    dims: { w: number; h: number }
   ): SimState {
-    const needWidth = state.currentRowRemaining === colWidth 
-      ? dims.w 
-      : dims.w + kerf
-    
+    const needWidth = state.currentRowRemaining === colWidth ? dims.w : dims.w + kerf
+
     if (needWidth <= state.currentRowRemaining) {
       // Fits in current row
       return {
         totalHeight: state.totalHeight,
         currentRowHeight: Math.max(state.currentRowHeight, dims.h),
-        currentRowRemaining: state.currentRowRemaining - needWidth
+        currentRowRemaining: state.currentRowRemaining - needWidth,
       }
     } else {
       // Need new row
-      const newTotalHeight = state.currentRowHeight > 0 
-        ? state.totalHeight + state.currentRowHeight + kerf 
-        : 0
+      const newTotalHeight =
+        state.currentRowHeight > 0 ? state.totalHeight + state.currentRowHeight + kerf : 0
       return {
         totalHeight: newTotalHeight,
         currentRowHeight: dims.h,
-        currentRowRemaining: colWidth - dims.w
+        currentRowRemaining: colWidth - dims.w,
       }
     }
   }
@@ -266,7 +261,7 @@ function simulateColumnAllocation(
   for (const item of sorted) {
     const leftFit = getBestOrientation(leftWidth, item)
     const rightFit = getBestOrientation(rightWidth, item)
-    
+
     if (leftFit && !rightFit) {
       left.push(item)
       Object.assign(simLeft, simulateAdd(simLeft, leftWidth, leftFit))
@@ -277,10 +272,10 @@ function simulateColumnAllocation(
       // Choose column with lower predicted height after adding
       const newLeft = simulateAdd(simLeft, leftWidth, leftFit)
       const newRight = simulateAdd(simRight, rightWidth, rightFit)
-      
+
       const leftPredicted = newLeft.totalHeight + newLeft.currentRowHeight
       const rightPredicted = newRight.totalHeight + newRight.currentRowHeight
-      
+
       if (leftPredicted <= rightPredicted) {
         left.push(item)
         Object.assign(simLeft, newLeft)
@@ -293,7 +288,7 @@ function simulateColumnAllocation(
       return { left: [], right: [], valid: false }
     }
   }
-  
+
   return { left, right, valid: true }
 }
 
@@ -310,7 +305,7 @@ function countCutsForBoard(
   let count = 0
 
   // Vertical master cuts (column splits)
-  ;(board.columnSplits || []).forEach(x => {
+  ;(board.columnSplits || []).forEach((x) => {
     const key = `V|${x}|0|${boardH}`
     if (!keySet.has(key)) {
       keySet.add(key)
@@ -319,7 +314,7 @@ function countCutsForBoard(
   })
 
   // Horizontal cuts (bottom of each strip)
-  board.strips.forEach(strip => {
+  board.strips.forEach((strip) => {
     const y = strip.y + strip.height
     if (y < boardH) {
       const key = `H|${strip.x}|${y}|${strip.x + strip.width}`
@@ -331,7 +326,7 @@ function countCutsForBoard(
   })
 
   // Vertical cuts within strips
-  board.strips.forEach(strip => {
+  board.strips.forEach((strip) => {
     // Cuts between adjacent pieces
     for (let i = 0; i < strip.pieces.length - 1; i++) {
       const piece = strip.pieces[i]
@@ -342,7 +337,7 @@ function countCutsForBoard(
         count++
       }
     }
-    
+
     // Closure cut if strip doesn't reach right edge
     const lastPiece = strip.pieces[strip.pieces.length - 1]
     if (lastPiece) {
@@ -368,18 +363,18 @@ export function tryOneBoardTwoColumnsOptimized(
   config: OptimizationConfig
 ): BoardLayout & { utilization: number } {
   const { boardWidth, boardHeight, kerf, allowRotate } = config
-  
+
   // Convert pieces to working format
-  const items = pieces.map(p => ({
+  const items = pieces.map((p) => ({
     specId: p.specId,
     w: p.width,
     h: p.height,
-    id: p.id
+    id: p.id,
   }))
 
   // Generate split candidates from piece dimensions
   const candidateSet = new Set<number>()
-  items.forEach(item => {
+  items.forEach((item) => {
     candidateSet.add(item.w)
     candidateSet.add(item.h)
     // Also add common fractions of board width
@@ -391,7 +386,7 @@ export function tryOneBoardTwoColumnsOptimized(
   })
 
   const candidates = Array.from(candidateSet)
-    .filter(w => w > 50 && w < boardWidth - 50)
+    .filter((w) => w > 50 && w < boardWidth - 50)
     .sort((a, b) => a - b) // Sort ascending to try smaller splits first
 
   const evaluations: SplitEvaluation[] = []
@@ -400,18 +395,12 @@ export function tryOneBoardTwoColumnsOptimized(
   for (const splitX of candidates) {
     const leftWidth = splitX
     const rightWidth = boardWidth - splitX - kerf
-    
+
     if (rightWidth <= 0) continue
 
     // Simulate allocation
-    const allocation = simulateColumnAllocation(
-      items, 
-      leftWidth, 
-      rightWidth, 
-      kerf, 
-      allowRotate
-    )
-    
+    const allocation = simulateColumnAllocation(items, leftWidth, rightWidth, kerf, allowRotate)
+
     if (!allocation.valid) {
       evaluations.push({
         splitX,
@@ -421,7 +410,7 @@ export function tryOneBoardTwoColumnsOptimized(
         numCuts: Infinity,
         totalSlack: Infinity,
         closureCuts: Infinity,
-        utilization: 0
+        utilization: 0,
       })
       continue
     }
@@ -432,7 +421,7 @@ export function tryOneBoardTwoColumnsOptimized(
       strips: [],
       width: boardWidth,
       height: boardHeight,
-      columnSplits: [splitX]
+      columnSplits: [splitX],
     }
 
     // Pack left column
@@ -456,7 +445,7 @@ export function tryOneBoardTwoColumnsOptimized(
         numCuts: Infinity,
         totalSlack: Infinity,
         closureCuts: Infinity,
-        utilization: 0
+        utilization: 0,
       })
       continue
     }
@@ -482,7 +471,7 @@ export function tryOneBoardTwoColumnsOptimized(
         numCuts: Infinity,
         totalSlack: Infinity,
         closureCuts: Infinity,
-        utilization: 0
+        utilization: 0,
       })
       continue
     }
@@ -494,7 +483,7 @@ export function tryOneBoardTwoColumnsOptimized(
 
     // Count cuts
     const numCuts = countCutsForBoard(board, boardWidth, boardHeight, kerf)
-    
+
     // Calculate utilization
     const usedArea = allPlaced.reduce((sum, p) => sum + p.w * p.h, 0)
     const totalArea = boardWidth * boardHeight
@@ -508,13 +497,13 @@ export function tryOneBoardTwoColumnsOptimized(
       numCuts,
       totalSlack: leftPack.slackTotal + rightPack.slackTotal,
       closureCuts: leftPack.closureCuts + rightPack.closureCuts,
-      utilization
+      utilization,
     })
   }
 
   // Filter valid evaluations
-  const validEvals = evaluations.filter(e => e.valid)
-  
+  const validEvals = evaluations.filter((e) => e.valid)
+
   if (validEvals.length === 0) {
     // No valid split found, return empty board
     return {
@@ -522,7 +511,7 @@ export function tryOneBoardTwoColumnsOptimized(
       strips: [],
       utilization: 0,
       width: boardWidth,
-      height: boardHeight
+      height: boardHeight,
     }
   }
 
@@ -552,7 +541,7 @@ export function tryOneBoardTwoColumnsOptimized(
     columnSplits: [best.splitX],
     utilization: best.utilization,
     width: boardWidth,
-    height: boardHeight
+    height: boardHeight,
   }
 }
 
@@ -566,27 +555,27 @@ export function optimizeCuttingV2(
   // Convert piece specs to expanded format
   const expandedPieces: { id: string; width: number; height: number; specId: string }[] = []
   let counter = 1
-  
+
   for (const spec of pieces) {
     for (let i = 0; i < spec.qty; i++) {
       expandedPieces.push({
         id: `piece-${counter++}`,
         width: spec.w,
         height: spec.h,
-        specId: spec.id
+        specId: spec.id,
       })
     }
   }
 
   // Try optimized two-column approach
   const board = tryOneBoardTwoColumnsOptimized(expandedPieces, config)
-  
+
   // Generate cuts
   const cuts = computeCuts([board], config.boardWidth, config.boardHeight, config.kerf)
-  
+
   // Extract all pieces from the board's strips
   const allPieces: PlacedPiece[] = []
-  board.strips.forEach(strip => {
+  board.strips.forEach((strip) => {
     allPieces.push(...strip.pieces)
   })
 
@@ -594,7 +583,7 @@ export function optimizeCuttingV2(
     boards: [board],
     allPieces,
     utilization: board.utilization,
-    cuts
+    cuts,
   }
 }
 

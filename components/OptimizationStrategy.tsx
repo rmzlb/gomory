@@ -19,7 +19,7 @@ export default function OptimizationStrategy({
   priority,
   onStrategyChange,
   onPriorityChange,
-  showAdvanced = false
+  showAdvanced = false,
 }: OptimizationStrategyProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -28,26 +28,26 @@ export default function OptimizationStrategy({
       value: 'auto' as CuttingStrategy,
       label: 'Auto',
       description: 'Sélection automatique de la meilleure stratégie',
-      icon: '🤖'
+      icon: '🤖',
     },
     {
       value: 'vertical-first' as CuttingStrategy,
       label: 'Vertical-First',
       description: 'Colonnes verticales puis bandes horizontales',
-      icon: '↕️'
+      icon: '↕️',
     },
     {
       value: 'horizontal-first' as CuttingStrategy,
       label: 'Horizontal-First',
       description: 'Bandes horizontales puis coupes verticales',
-      icon: '↔️'
+      icon: '↔️',
     },
     {
       value: 'two-columns' as CuttingStrategy,
       label: 'Two-Columns',
       description: 'Optimisation avec exactement 2 colonnes',
-      icon: '⚖️'
-    }
+      icon: '⚖️',
+    },
   ]
 
   const priorities = [
@@ -55,39 +55,38 @@ export default function OptimizationStrategy({
       value: 'cuts' as OptimizationPriority,
       label: 'Minimiser coupes',
       description: 'Réduit le nombre total de coupes',
-      icon: '✂️'
+      icon: '✂️',
     },
     {
       value: 'waste' as OptimizationPriority,
       label: 'Minimiser chutes',
-      description: 'Maximise l\'utilisation du matériau',
-      icon: '📐'
+      description: "Maximise l'utilisation du matériau",
+      icon: '📐',
     },
     {
       value: 'balanced' as OptimizationPriority,
       label: 'Équilibré',
       description: 'Balance entre coupes et chutes',
-      icon: '⚖️'
-    }
+      icon: '⚖️',
+    },
   ]
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-lg p-4">
+    <div className="rounded-lg border border-neutral-200 bg-white p-4">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between text-left group"
+        className="group flex w-full items-center justify-between text-left"
         type="button"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-neutral-100 rounded flex items-center justify-center text-sm">
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-neutral-100 text-sm">
             ⚙️
           </div>
           <div>
-            <h3 className="text-sm font-medium text-neutral-900">
-              Stratégie d'optimisation
-            </h3>
+            <h3 className="text-sm font-medium text-neutral-900">Stratégie d'optimisation</h3>
             <p className="text-xs text-neutral-500">
-              {strategies.find(s => s.value === strategy)?.label} • {priorities.find(p => p.value === priority)?.label}
+              {strategies.find((s) => s.value === strategy)?.label} •{' '}
+              {priorities.find((p) => p.value === priority)?.label}
             </p>
           </div>
         </div>
@@ -96,7 +95,7 @@ export default function OptimizationStrategy({
           transition={{ duration: 0.2 }}
           className="text-neutral-400 group-hover:text-neutral-600"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </motion.div>
@@ -111,10 +110,10 @@ export default function OptimizationStrategy({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="pt-4 space-y-4">
+            <div className="space-y-4 pt-4">
               {/* Strategy Selection */}
               <div>
-                <label className="text-xs font-medium text-neutral-700 block mb-2">
+                <label className="mb-2 block text-xs font-medium text-neutral-700">
                   Stratégie de découpe
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -122,24 +121,18 @@ export default function OptimizationStrategy({
                     <button
                       key={s.value}
                       onClick={() => onStrategyChange(s.value)}
-                      className={`
-                        p-3 rounded-lg border transition-all text-left
-                        ${strategy === s.value 
-                          ? 'border-neutral-900 bg-neutral-50' 
+                      className={`rounded-lg border p-3 text-left transition-all ${
+                        strategy === s.value
+                          ? 'border-neutral-900 bg-neutral-50'
                           : 'border-neutral-200 hover:border-neutral-400'
-                        }
-                      `}
+                      } `}
                       type="button"
                     >
                       <div className="flex items-start gap-2">
                         <span className="text-lg">{s.icon}</span>
                         <div className="flex-1">
-                          <div className="text-xs font-medium text-neutral-900">
-                            {s.label}
-                          </div>
-                          <div className="text-xs text-neutral-500 mt-0.5">
-                            {s.description}
-                          </div>
+                          <div className="text-xs font-medium text-neutral-900">{s.label}</div>
+                          <div className="mt-0.5 text-xs text-neutral-500">{s.description}</div>
                         </div>
                       </div>
                     </button>
@@ -149,7 +142,7 @@ export default function OptimizationStrategy({
 
               {/* Priority Selection */}
               <div>
-                <label className="text-xs font-medium text-neutral-700 block mb-2">
+                <label className="mb-2 block text-xs font-medium text-neutral-700">
                   Priorité d'optimisation
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -157,19 +150,15 @@ export default function OptimizationStrategy({
                     <button
                       key={p.value}
                       onClick={() => onPriorityChange(p.value)}
-                      className={`
-                        p-2 rounded-lg border transition-all text-center
-                        ${priority === p.value 
-                          ? 'border-neutral-900 bg-neutral-50' 
+                      className={`rounded-lg border p-2 text-center transition-all ${
+                        priority === p.value
+                          ? 'border-neutral-900 bg-neutral-50'
                           : 'border-neutral-200 hover:border-neutral-400'
-                        }
-                      `}
+                      } `}
                       type="button"
                     >
-                      <div className="text-lg mb-1">{p.icon}</div>
-                      <div className="text-xs font-medium text-neutral-900">
-                        {p.label}
-                      </div>
+                      <div className="mb-1 text-lg">{p.icon}</div>
+                      <div className="text-xs font-medium text-neutral-900">{p.label}</div>
                     </button>
                   ))}
                 </div>
@@ -177,13 +166,13 @@ export default function OptimizationStrategy({
 
               {/* Advanced Info */}
               {showAdvanced && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                   <div className="flex items-start gap-2">
                     <span className="text-amber-600">💡</span>
                     <div className="text-xs text-amber-800">
-                      <strong>Conseil:</strong> Pour des pièces répétitives de même largeur, 
-                      utilisez "Two-Columns" avec "Minimiser coupes" pour éviter les coupes 
-                      de fermeture inutiles.
+                      <strong>Conseil:</strong> Pour des pièces répétitives de même largeur,
+                      utilisez "Two-Columns" avec "Minimiser coupes" pour éviter les coupes de
+                      fermeture inutiles.
                     </div>
                   </div>
                 </div>
@@ -194,14 +183,14 @@ export default function OptimizationStrategy({
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-neutral-50 rounded-lg p-3"
+                  className="rounded-lg bg-neutral-50 p-3"
                 >
                   <div className="text-xs text-neutral-600">
-                    <div className="font-medium mb-1">Mode automatique activé</div>
+                    <div className="mb-1 font-medium">Mode automatique activé</div>
                     <div>
                       L'algorithme testera plusieurs stratégies et sélectionnera celle qui :
                     </div>
-                    <ul className="mt-1 space-y-0.5 ml-3">
+                    <ul className="ml-3 mt-1 space-y-0.5">
                       <li>• Minimise le nombre de coupes</li>
                       <li>• Maximise l'utilisation du matériau</li>
                       <li>• Optimise le temps de découpe</li>

@@ -36,11 +36,7 @@ export async function exportElementAsPNG(
   element: HTMLElement,
   options: ExportOptions = {}
 ): Promise<void> {
-  const {
-    filename = 'export.png',
-    quality = 0.95,
-    backgroundColor = '#ffffff',
-  } = options
+  const { filename = 'export.png', quality = 0.95, backgroundColor = '#ffffff' } = options
 
   try {
     const canvas = await html2canvas(element, {
@@ -60,7 +56,7 @@ export async function exportElementAsPNG(
             } as ExportError)
             return
           }
-          
+
           try {
             downloadBlob(blob, filename)
             resolve()
@@ -88,10 +84,7 @@ export async function exportElementAsPNG(
 /**
  * Export an SVG element as file
  */
-export function exportSVG(
-  svgElement: SVGElement,
-  filename = 'export.svg'
-): void {
+export function exportSVG(svgElement: SVGElement, filename = 'export.svg'): void {
   const serializer = new XMLSerializer()
   const svgString = serializer.serializeToString(svgElement)
   const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
@@ -120,28 +113,36 @@ export async function exportBoardsAsPDF(
     // Add title page
     pdf.setFontSize(20)
     pdf.text('Cutting Plan', pageWidth / 2, 30, { align: 'center' })
-    
+
     pdf.setFontSize(12)
-    pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 40, { align: 'center' })
+    pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 40, {
+      align: 'center',
+    })
     pdf.text(`Total boards: ${boards.length}`, pageWidth / 2, 50, { align: 'center' })
-    
+
     // Calculate average utilization
     const avgUtilization = boards.reduce((sum, b) => sum + (b.utilization || 0), 0) / boards.length
-    pdf.text(`Average utilization: ${(avgUtilization * 100).toFixed(1)}%`, pageWidth / 2, 60, { align: 'center' })
+    pdf.text(`Average utilization: ${(avgUtilization * 100).toFixed(1)}%`, pageWidth / 2, 60, {
+      align: 'center',
+    })
 
     // Add each board on a new page
     for (let i = 0; i < boards.length; i++) {
       pdf.addPage()
-      
+
       // Page header
       pdf.setFontSize(14)
       pdf.text(`Board ${i + 1}`, margin, margin + 10)
-      
+
       pdf.setFontSize(10)
-      pdf.text(`Utilization: ${((boards[i].utilization || 0) * 100).toFixed(1)}%`, margin, margin + 18)
+      pdf.text(
+        `Utilization: ${((boards[i].utilization || 0) * 100).toFixed(1)}%`,
+        margin,
+        margin + 18
+      )
       const pieceCount = boards[i].strips.reduce((sum, strip) => sum + strip.pieces.length, 0)
       pdf.text(`Pieces: ${pieceCount}`, margin, margin + 24)
-      
+
       // Get the board visualization element
       const boardElement = document.getElementById(`board-${i}`)
       if (boardElement) {
@@ -151,16 +152,17 @@ export async function exportBoardsAsPDF(
             scale: 2,
             logging: false,
           })
-          
+
           const imgData = canvas.toDataURL('image/png')
-          const imgWidth = pageWidth - (2 * margin)
+          const imgWidth = pageWidth - 2 * margin
           const imgHeight = (canvas.height * imgWidth) / canvas.width
-          
+
           // Check if image fits on page
           const maxHeight = pageHeight - margin - 35
           const finalHeight = Math.min(imgHeight, maxHeight)
-          const finalWidth = imgHeight > maxHeight ? (canvas.width * finalHeight) / canvas.height : imgWidth
-          
+          const finalWidth =
+            imgHeight > maxHeight ? (canvas.width * finalHeight) / canvas.height : imgWidth
+
           pdf.addImage(imgData, 'PNG', margin, margin + 30, finalWidth, finalHeight)
         } catch (error) {
           console.error(`Failed to add board ${i + 1} to PDF:`, error)
