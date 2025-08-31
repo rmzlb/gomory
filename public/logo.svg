@@ -1,0 +1,25 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for visibility on GitHub -->
+  <rect width="120" height="120" rx="20" fill="#ffffff"/>
+  
+  <!-- Centered logo at larger scale -->
+  <g transform="translate(60, 60)">
+    <g transform="scale(3.5) translate(-16, -16)">
+      <!-- Main square -->
+      <rect x="4" y="4" width="24" height="24" stroke="#171717" stroke-width="1.5" />
+      
+      <!-- Vertical cut -->
+      <line x1="16" y1="4" x2="16" y2="28" stroke="#171717" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.6" />
+      
+      <!-- Horizontal cuts -->
+      <line x1="4" y1="12" x2="16" y2="12" stroke="#171717" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.6" />
+      <line x1="16" y1="20" x2="28" y2="20" stroke="#171717" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.6" />
+      
+      <!-- Optimized pieces - filled rectangles with colors -->
+      <rect x="6" y="6" width="8" height="4" fill="#F59E0B" opacity="0.4" />
+      <rect x="6" y="14" width="8" height="12" fill="#3B82F6" opacity="0.3" />
+      <rect x="18" y="6" width="8" height="12" fill="#10B981" opacity="0.4" />
+      <rect x="18" y="22" width="8" height="4" fill="#8B5CF6" opacity="0.3" />
+    </g>
+  </g>
+</svg>
