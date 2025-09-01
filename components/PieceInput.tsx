@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { getPieceColor } from '@/lib/colors'
 
@@ -34,6 +34,19 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
     return initial
   })
 
+  // Sync local values when pieces prop changes (e.g., when restoring from history)
+  useEffect(() => {
+    const newValues: LocalPieceValues = {}
+    pieces.forEach((p) => {
+      newValues[p.id] = {
+        w: p.w.toString(),
+        h: p.h.toString(),
+        qty: p.qty.toString(),
+      }
+    })
+    setLocalValues(newValues)
+  }, [pieces])
+
   const updatePiece = (id: string, field: keyof PieceSpec, value: string | number) => {
     if (field === 'id') {
       onChange(pieces.map((p) => (p.id === id ? { ...p, id: value as string } : p)))
@@ -49,7 +62,9 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
 
       // Update actual value if it's a valid number
       const num = Number(value)
-      if (!isNaN(num) && num > 0) {
+      // Allow 0 for quantity, but require positive for dimensions
+      const minValue = field === 'qty' ? 0 : 1
+      if (!isNaN(num) && num >= minValue) {
         onChange(pieces.map((p) => (p.id === id ? { ...p, [field]: num } : p)))
       }
     }
@@ -61,8 +76,9 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
 
     const value = localValues[id]?.[field] || ''
     const num = Number(value)
+    const minValue = field === 'qty' ? 0 : 1
 
-    if (isNaN(num) || num <= 0) {
+    if (isNaN(num) || num < minValue) {
       // Reset to original value
       setLocalValues((prev) => ({
         ...prev,
@@ -75,6 +91,21 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
       // Update with valid value
       onChange(pieces.map((p) => (p.id === id ? { ...p, [field]: num } : p)))
     }
+  }
+
+  const incrementQuantity = (id: string, delta: number) => {
+    const piece = pieces.find((p) => p.id === id)
+    if (!piece) return
+
+    const newQty = Math.max(0, piece.qty + delta)
+    onChange(pieces.map((p) => (p.id === id ? { ...p, qty: newQty } : p)))
+    setLocalValues((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        qty: newQty.toString(),
+      },
+    }))
   }
 
   const removePiece = (id: string) => {
@@ -238,16 +269,60 @@ export default function PieceInput({ pieces, onChange }: PieceInputProps) {
 
                   <div>
                     <label className="mb-0.5 block text-xs text-neutral-500 sm:mb-1">Qté</label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      value={localValues[piece.id]?.qty || piece.qty}
-                      onChange={(e) => updatePiece(piece.id, 'qty', e.target.value)}
-                      onBlur={() => handleBlur(piece.id, 'qty')}
-                      className="w-full rounded border border-neutral-200 bg-white px-1.5 py-1 text-sm transition-colors focus:border-neutral-400 focus:outline-none sm:px-2"
-                      placeholder="Quantité"
-                    />
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => incrementQuantity(piece.id, -1)}
+                        className="flex h-7 w-7 items-center justify-center rounded border border-neutral-200 bg-white text-neutral-600 transition-colors hover:bg-neutral-100 active:bg-neutral-200"
+                        aria-label="Diminuer quantité"
+                      >
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M20 12H4"
+                          />
+                        </svg>
+                      </button>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        value={localValues[piece.id]?.qty || piece.qty}
+                        onChange={(e) => updatePiece(piece.id, 'qty', e.target.value)}
+                        onBlur={() => handleBlur(piece.id, 'qty')}
+                        className={`w-12 rounded border border-neutral-200 bg-white px-1 py-1 text-center text-sm transition-colors focus:border-neutral-400 focus:outline-none ${
+                          piece.qty === 0 ? 'text-neutral-400' : ''
+                        }`}
+                        placeholder="0"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => incrementQuantity(piece.id, 1)}
+                        className="flex h-7 w-7 items-center justify-center rounded border border-neutral-200 bg-white text-neutral-600 transition-colors hover:bg-neutral-100 active:bg-neutral-200"
+                        aria-label="Augmenter quantité"
+                      >
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
 

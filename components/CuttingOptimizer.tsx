@@ -5,10 +5,13 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 
 import { optimizeCutting } from '@/lib/optimizer'
+import { saveToHistory } from '@/lib/utils/history'
+import { validateConfiguration } from '@/lib/utils/validation'
 
 import BoardInput from './BoardInput'
 import BoardVisualizer from './BoardVisualizer'
 import ExportPanel from './ExportPanel'
+import HistoryPanel from './HistoryPanel'
 import HowItWorks from './HowItWorks'
 import PieceInput from './PieceInput'
 import PositioningReport from './PositioningReport'
@@ -43,9 +46,14 @@ export default function CuttingOptimizer() {
     { id: 'D', w: 200, h: 300, qty: 6 },
   ])
 
+  // Validate configuration
+  const validation = validateConfiguration(config, pieces)
+  const hasErrors = validation.errors.length > 0
+  const hasWarnings = validation.warnings.length > 0
+
   // Calculate optimization when button is clicked
   const handleOptimize = () => {
-    if (pieces.length === 0) return
+    if (pieces.length === 0 || hasErrors) return
     setIsCalculating(true)
     setShowResults(false)
 
@@ -54,6 +62,9 @@ export default function CuttingOptimizer() {
       setResult(res)
       setIsCalculating(false)
       setShowResults(true)
+
+      // Save to history
+      saveToHistory(config, pieces, res)
 
       // Scroll to visualization on mobile devices
       if (window.innerWidth < 1024) {
@@ -80,6 +91,13 @@ export default function CuttingOptimizer() {
 
   const updateConfig = (updates: Partial<OptimizationConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }))
+  }
+
+  const handleRestore = (restoredConfig: OptimizationConfig, restoredPieces: PieceSpec[]) => {
+    setConfig(restoredConfig)
+    setPieces(restoredPieces)
+    setShowResults(false)
+    setResult(null)
   }
 
   const resetExample = () => {
@@ -179,11 +197,42 @@ export default function CuttingOptimizer() {
               <PieceInput pieces={pieces} onChange={setPieces} />
             </div>
 
+            {/* History panel */}
+            <HistoryPanel onRestore={handleRestore} />
+
             {/* Optimize button in sidebar */}
             <div className="rounded-xl border border-neutral-200 bg-white p-5">
+              {/* Validation messages */}
+              {(hasErrors || hasWarnings) && (
+                <div className="mb-3 space-y-2">
+                  {validation.errors.map((error, i) => (
+                    <motion.div
+                      key={`error-${i}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-start gap-2 rounded-lg bg-red-50 p-2 text-xs"
+                    >
+                      <span className="text-red-600">⚠️</span>
+                      <span className="text-red-700">{error}</span>
+                    </motion.div>
+                  ))}
+                  {validation.warnings.map((warning, i) => (
+                    <motion.div
+                      key={`warning-${i}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-start gap-2 rounded-lg bg-amber-50 p-2 text-xs"
+                    >
+                      <span className="text-amber-600">⚡</span>
+                      <span className="text-amber-700">{warning}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
               <button
                 onClick={handleOptimize}
-                disabled={pieces.length === 0 || isCalculating}
+                disabled={pieces.length === 0 || isCalculating || hasErrors}
                 className="w-full transform rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isCalculating ? (
@@ -368,12 +417,31 @@ export default function CuttingOptimizer() {
                   <p className="mx-auto mb-8 max-w-md text-neutral-600">
                     {pieces.length === 0
                       ? 'Ajoutez des pièces à découper dans le panneau de gauche pour commencer'
-                      : "Cliquez sur le bouton pour lancer l'optimisation"}
+                      : hasErrors
+                        ? 'Corrigez les erreurs de configuration pour continuer'
+                        : "Cliquez sur le bouton pour lancer l'optimisation"}
                   </p>
+
+                  {/* Show validation errors in center view */}
+                  {hasErrors && (
+                    <div className="mx-auto mb-6 max-w-md space-y-2">
+                      {validation.errors.map((error, i) => (
+                        <motion.div
+                          key={`center-error-${i}`}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-start gap-2 rounded-lg bg-red-50 p-3 text-sm"
+                        >
+                          <span className="text-red-600">⚠️</span>
+                          <span className="text-red-700">{error}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
 
                   <button
                     onClick={handleOptimize}
-                    disabled={pieces.length === 0 || isCalculating}
+                    disabled={pieces.length === 0 || isCalculating || hasErrors}
                     className="transform rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-4 text-lg font-medium text-white transition-all hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isCalculating ? (
