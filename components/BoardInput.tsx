@@ -10,6 +10,7 @@ interface BoardInputProps {
   allowRotate: boolean
   forceTwoColumns: boolean
   objective?: 'waste' | 'cuts' | 'balanced'
+  useAdvancedOptimizer?: boolean
   onChange: (config: {
     boardWidth?: number
     boardHeight?: number
@@ -17,6 +18,7 @@ interface BoardInputProps {
     allowRotate?: boolean
     forceTwoColumns?: boolean
     objective?: 'waste' | 'cuts' | 'balanced'
+    useAdvancedOptimizer?: boolean
   }) => void
 }
 
@@ -27,6 +29,7 @@ export default function BoardInput({
   allowRotate,
   forceTwoColumns,
   objective = 'balanced',
+  useAdvancedOptimizer = false,
   onChange,
 }: BoardInputProps) {
   // Local state for input values to allow empty strings during editing
@@ -180,6 +183,22 @@ export default function BoardInput({
           <span className="text-sm text-neutral-600 transition-colors group-hover:text-neutral-900">
             Optimisation 2 colonnes
           </span>
+        </motion.label>
+
+        <motion.label
+          className="group flex cursor-pointer items-center gap-2"
+          whileTap={{ scale: 0.98 }}
+        >
+          <input
+            type="checkbox"
+            checked={useAdvancedOptimizer}
+            onChange={(e) => onChange({ useAdvancedOptimizer: e.target.checked })}
+            className="h-4 w-4 rounded border-neutral-300 text-neutral-900 focus:ring-0 focus:ring-offset-0"
+          />
+          <span className="text-sm text-neutral-600 transition-colors group-hover:text-neutral-900">
+            Optimiseur avancé (V3)
+          </span>
+          <span className="text-xs font-medium text-amber-600">NEW</span>
         </motion.label>
       </div>
     </div>

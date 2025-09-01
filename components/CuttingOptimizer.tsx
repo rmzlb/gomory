@@ -29,6 +29,7 @@ export default function CuttingOptimizer() {
     allowRotate: true,
     forceTwoColumns: true,
     objective: 'balanced',
+    useAdvancedOptimizer: false,
   })
 
   // Visual settings
@@ -108,6 +109,7 @@ export default function CuttingOptimizer() {
       allowRotate: true,
       forceTwoColumns: true,
       objective: 'balanced',
+      useAdvancedOptimizer: false,
     })
     setPieces([
       { id: 'A', w: 930, h: 750, qty: 5 },
@@ -188,6 +190,7 @@ export default function CuttingOptimizer() {
                 allowRotate={config.allowRotate}
                 forceTwoColumns={config.forceTwoColumns}
                 objective={config.objective}
+                useAdvancedOptimizer={config.useAdvancedOptimizer}
                 onChange={updateConfig}
               />
             </div>

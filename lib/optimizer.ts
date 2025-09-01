@@ -8,6 +8,8 @@ import type {
   OptimizationConfig,
 } from './types'
 
+import { optimizeV3 } from './optimizer-v3'
+
 // Core: Shelf packer (NFDH-like) pour une colonne
 function packColumnShelves(
   board: BoardLayout,
@@ -610,6 +612,18 @@ export function optimizeCutting(
       allPieces: [],
       cuts: [],
       utilization: 0,
+    }
+  }
+
+  // Try V3 optimizer first if enabled (multi-column + multi-start)
+  if (config.useAdvancedOptimizer) {
+    try {
+      const v3Result = optimizeV3(config, validSpecs)
+      if (v3Result.boards.length > 0) {
+        return v3Result
+      }
+    } catch (error) {
+      console.warn('V3 optimizer failed, falling back to V2', error)
     }
   }
 

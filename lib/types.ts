@@ -61,4 +61,5 @@ export type OptimizationConfig = {
   allowRotate: boolean
   forceTwoColumns: boolean
   objective: 'waste' | 'cuts' | 'balanced'
+  useAdvancedOptimizer?: boolean // Enable multi-column + multi-start V3 optimizer
 }
