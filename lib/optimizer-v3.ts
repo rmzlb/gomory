@@ -413,36 +413,71 @@ function countMultiColumnCuts(
 ): number {
   const cuts = new Set<string>()
 
-  // Vertical column splits
-  if (board.columnSplits) {
+  // Vertical column splits (edge-to-edge)
+  if (board.columnSplits && board.columnSplits.length > 0) {
     board.columnSplits.forEach((x) => {
-      cuts.add(`V|0|${x}|${boardH}|${x}`)
+      if (x > 0 && x < boardW) {
+        // Main column separation cut
+        cuts.add(`V|${x}|0|${x}|${boardH}`)
+      }
     })
   }
 
-  // Horizontal seams between strips
+  // Group strips by column for proper cut counting
+  const columnStrips = new Map<number, typeof board.strips>()
   board.strips.forEach((strip) => {
-    if (strip.y + strip.height < boardH) {
-      cuts.add(
-        `H|${strip.x}|${strip.y + strip.height}|${strip.x + strip.width}|${strip.y + strip.height}`
-      )
+    const colX = strip.x
+    if (!columnStrips.has(colX)) {
+      columnStrips.set(colX, [])
     }
+    columnStrips.get(colX)!.push(strip)
   })
 
-  // Vertical cuts within strips
-  board.strips.forEach((strip) => {
-    strip.pieces.forEach((piece, i) => {
-      if (i < strip.pieces.length - 1) {
-        const cutX = piece.x + piece.w + kerf / 2
-        cuts.add(`V|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`)
+  // Process each column's strips
+  columnStrips.forEach((strips, colX) => {
+    // Sort strips by Y position
+    const sortedStrips = strips.sort((a, b) => a.y - b.y)
+    
+    // Horizontal seams between strips in this column
+    sortedStrips.forEach((strip, idx) => {
+      if (idx < sortedStrips.length - 1) {
+        // Seam at bottom of this strip
+        const seamY = strip.y + strip.height
+        cuts.add(`H|${strip.x}|${seamY}|${strip.x + strip.width}|${seamY}`)
       }
     })
 
-    // Closing cut if last piece doesn't reach edge
-    const lastPiece = strip.pieces[strip.pieces.length - 1]
-    if (lastPiece && lastPiece.x + lastPiece.w < strip.x + strip.width - 1) {
-      const cutX = lastPiece.x + lastPiece.w + kerf / 2
-      cuts.add(`V|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`)
+    // Vertical cuts within each strip
+    sortedStrips.forEach((strip) => {
+      const sortedPieces = strip.pieces.sort((a, b) => a.x - b.x)
+      
+      sortedPieces.forEach((piece, i) => {
+        if (i < sortedPieces.length - 1) {
+          // Cut between adjacent pieces
+          const cutX = piece.x + piece.w + kerf / 2
+          cuts.add(`V|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`)
+        }
+      })
+
+      // Closing cut at right edge of strip if needed
+      const lastPiece = sortedPieces[sortedPieces.length - 1]
+      if (lastPiece) {
+        const pieceRight = lastPiece.x + lastPiece.w
+        const stripRight = strip.x + strip.width
+        
+        // If piece doesn't reach strip edge, add closing cut
+        if (pieceRight < stripRight - kerf) {
+          const cutX = pieceRight + kerf / 2
+          cuts.add(`V|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`)
+        }
+      }
+    })
+
+    // Column closing cut at right edge if column doesn't reach board edge
+    const colRight = colX + (strips[0]?.width || 0)
+    if (colRight > 0 && colRight < boardW - kerf) {
+      // This column needs a closing cut on its right edge
+      cuts.add(`V|${colRight}|0|${colRight}|${boardH}`)
     }
   })
 

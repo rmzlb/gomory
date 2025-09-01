@@ -29,7 +29,7 @@ export default function CuttingOptimizer() {
     allowRotate: true,
     forceTwoColumns: true,
     objective: 'balanced',
-    useAdvancedOptimizer: false,
+    useAdvancedOptimizer: false, // V3 disabled - needs bug fixes
   })
 
   // Visual settings

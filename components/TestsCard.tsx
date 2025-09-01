@@ -169,6 +169,34 @@ export default function TestsCard({
     passes.push('Pas de double-comptage ✓')
   }
 
+  // Check bottom cuts for pieces shorter than strip height
+  let bottomCutsMissing = false
+  result.boards.forEach((board) => {
+    board.strips.forEach((strip) => {
+      strip.pieces.forEach((piece) => {
+        if (piece.h < strip.height - eps) {
+          // This piece needs a bottom cut
+          const yBottom = strip.y + piece.h
+          const hasBottomCut = result.cuts.some(cut => 
+            cut.type === 'H' &&
+            cut.boardIndex === board.index &&
+            Math.abs(cut.y1 - yBottom) < eps &&
+            cut.x1 <= piece.x + eps &&
+            cut.x2 >= piece.x + piece.w - eps
+          )
+          
+          if (!hasBottomCut) {
+            issues.push(`Coupe bas manquante: ${piece.id} @ Y=${yBottom}`)
+            bottomCutsMissing = true
+          }
+        }
+      })
+    })
+  })
+  if (!bottomCutsMissing) {
+    passes.push('Coupes de fermeture basses ✓')
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

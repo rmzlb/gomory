@@ -8,7 +8,7 @@ import type {
   OptimizationConfig,
 } from './types'
 
-import { optimizeV3 } from './optimizer-v3'
+import { optimizeV3Fixed } from './optimizer-v3-fixed'
 
 // Core: Shelf packer (NFDH-like) pour une colonne
 function packColumnShelves(
@@ -592,6 +592,27 @@ export function computeCuts(
           }
         }
       }
+      
+      // Horizontal bottom cuts for pieces shorter than strip height
+      for (const p of st.pieces) {
+        if (p.h < st.height - 1e-6) {
+          // This piece is shorter than the strip, needs a bottom cut
+          const yBottom = st.y + p.h
+          const k = `B${b.index}|H|${p.x}|${yBottom}|${p.x + p.w}|${yBottom}`
+          if (!keySet.has(k)) {
+            keySet.add(k)
+            cuts.push({
+              id: cid++,
+              type: 'H',
+              x1: p.x,
+              y1: yBottom,
+              x2: p.x + p.w,
+              y2: yBottom,
+              boardIndex: b.index,
+            })
+          }
+        }
+      }
     }
   }
 
@@ -618,7 +639,7 @@ export function optimizeCutting(
   // Try V3 optimizer first if enabled (multi-column + multi-start)
   if (config.useAdvancedOptimizer) {
     try {
-      const v3Result = optimizeV3(config, validSpecs)
+      const v3Result = optimizeV3Fixed(config, validSpecs)
       if (v3Result.boards.length > 0) {
         return v3Result
       }
