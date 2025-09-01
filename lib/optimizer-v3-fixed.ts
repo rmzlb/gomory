@@ -284,7 +284,7 @@ export function packDynamicColumns(
           col.currentY = orient.h + kerf
           
           columns.push(col)
-          if (currentX > 0) {
+          if (currentX > 0 && board.columnSplits) {
             board.columnSplits.push(currentX)
           }
           
@@ -367,7 +367,6 @@ function computeCuts(
       
       sortedPieces.forEach((piece, i) => {
         if (i < sortedPieces.length - 1) {
-          const nextPiece = sortedPieces[i + 1]
           const cutX = piece.x + piece.w + kerf / 2
           
           const key = `V|${board.index}|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`

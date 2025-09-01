@@ -105,7 +105,9 @@ function packMultiColumns(
           if (piece) {
             columns.push(newCol)
             allPieces.push(piece)
-            board.columnSplits.push(currentX)
+            if (board.columnSplits) {
+              board.columnSplits.push(currentX)
+            }
             placed = true
             break
           }

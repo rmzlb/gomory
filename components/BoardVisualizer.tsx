@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 
 import { getPieceColorBySpecId } from '@/lib/colors'
+import PieceHoverCardPortal from './PieceHoverCardPortal'
 
 import type { BoardLayout, Cut, PieceSpec } from '@/lib/types'
 
@@ -210,12 +211,64 @@ export default function BoardVisualizer({
         id={`board-svg-${board.index}`}
         className="board-svg-container relative overflow-auto rounded-lg bg-neutral-50 p-4"
       >
-        <svg
-          width={width}
-          height={height}
-          className="mx-auto"
-          style={{ minWidth: width, minHeight: height }}
-        >
+        <div className="relative inline-block mx-auto">
+          {/* Invisible overlay for hover interactions */}
+          <div className="absolute inset-0 pointer-events-none z-10" style={{ width, height }}>
+            {board.strips.map((strip) => 
+              strip.pieces.map((piece) => {
+                const px = piece.x * scale
+                const py = piece.y * scale
+                const pw = piece.w * scale
+                const ph = piece.h * scale
+                const spec = specs.find(s => s.id === piece.specId)
+                
+                // Calculate piece number across all pieces
+                let pieceNumber = 0
+                let totalPieces = 0
+                let foundCurrent = false
+                
+                board.strips.forEach(s => {
+                  s.pieces.forEach(p => {
+                    totalPieces++
+                    if (!foundCurrent) {
+                      pieceNumber++
+                      if (p.id === piece.id) {
+                        foundCurrent = true
+                      }
+                    }
+                  })
+                })
+                
+                return (
+                  <PieceHoverCardPortal
+                    key={piece.id}
+                    piece={piece}
+                    spec={spec}
+                    pieceNumber={pieceNumber}
+                    totalPieces={totalPieces}
+                    boardNumber={board.index + 1}
+                  >
+                    <div 
+                      className="absolute pointer-events-auto"
+                      style={{
+                        left: px,
+                        top: py,
+                        width: pw,
+                        height: ph,
+                      }}
+                    />
+                  </PieceHoverCardPortal>
+                )
+              })
+            )}
+          </div>
+          
+          <svg
+            width={width}
+            height={height}
+            className="mx-auto"
+            style={{ minWidth: width, minHeight: height }}
+          >
           {/* Board background with dimensions */}
           <g>
             <rect
@@ -387,6 +440,7 @@ export default function BoardVisualizer({
             })}
           </AnimatePresence>
         </svg>
+        </div>
       </div>
 
       {/* Footer info */}

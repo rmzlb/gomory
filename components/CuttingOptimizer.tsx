@@ -8,7 +8,7 @@ import { optimizeCutting } from '@/lib/optimizer'
 import { saveToHistory } from '@/lib/utils/history'
 import { validateConfiguration } from '@/lib/utils/validation'
 
-import BoardInput from './BoardInput'
+import BoardInputEnhanced from './BoardInputEnhanced'
 import BoardVisualizer from './BoardVisualizer'
 import ExportPanel from './ExportPanel'
 import HistoryPanel from './HistoryPanel'
@@ -183,7 +183,7 @@ export default function CuttingOptimizer() {
           >
             {/* Board configuration */}
             <div className="rounded-xl border border-neutral-200 bg-white p-5">
-              <BoardInput
+              <BoardInputEnhanced
                 boardWidth={config.boardWidth}
                 boardHeight={config.boardHeight}
                 kerf={config.kerf}
