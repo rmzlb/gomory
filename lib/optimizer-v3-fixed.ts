@@ -1,6 +1,6 @@
 /**
  * Optimizer V3 Fixed - Multi-column with proper placement
- * 
+ *
  * Fixes:
  * - Correct board dimensions
  * - No overlapping pieces
@@ -36,17 +36,19 @@ export function packMultiColumnSimple(
   }
 
   // Sort by height (NFDH)
-  const sorted = items.map(item => {
-    const orientations = [
-      { w: item.w, h: item.h, rotated: false },
-      ...(allowRotate && item.w !== item.h ? [{ w: item.h, h: item.w, rotated: true }] : [])
-    ]
-    // Pick orientation that maximizes height while fitting
-    const valid = orientations.filter(o => o.w <= boardW)
-    if (valid.length === 0) return null
-    const best = valid.sort((a, b) => b.h - a.h)[0]
-    return { ...item, ...best }
-  }).filter(Boolean) as Array<typeof items[0] & { rotated: boolean }>
+  const sorted = items
+    .map((item) => {
+      const orientations = [
+        { w: item.w, h: item.h, rotated: false },
+        ...(allowRotate && item.w !== item.h ? [{ w: item.h, h: item.w, rotated: true }] : []),
+      ]
+      // Pick orientation that maximizes height while fitting
+      const valid = orientations.filter((o) => o.w <= boardW)
+      if (valid.length === 0) return null
+      const best = valid.sort((a, b) => b.h - a.h)[0]
+      return { ...item, ...best }
+    })
+    .filter(Boolean) as Array<(typeof items)[0] & { rotated: boolean }>
 
   sorted.sort((a, b) => b.h - a.h)
 
@@ -65,16 +67,16 @@ export function packMultiColumnSimple(
 
     const placed: PlacedPiece[] = []
     const strips: Strip[] = []
-    
+
     // Simple strip packing
     let currentY = 0
-    
+
     while (sorted.length > 0 && currentY < boardH) {
       const stripHeight = sorted[0].h
-      
+
       // Check if strip fits
       if (currentY + stripHeight > boardH) break
-      
+
       const strip: Strip = {
         x: 0,
         width: boardW,
@@ -83,20 +85,20 @@ export function packMultiColumnSimple(
         pieces: [],
         usedWidth: 0,
       }
-      
+
       let currentX = 0
-      
+
       // Pack items into this strip
       for (let i = 0; i < sorted.length; ) {
         const item = sorted[i]
-        
+
         if (item.h <= stripHeight) {
           const pieceWidth = item.w
           const neededWidth = currentX === 0 ? pieceWidth : pieceWidth + kerf
-          
+
           if (currentX + neededWidth <= boardW) {
             const x = currentX === 0 ? 0 : currentX + kerf
-            
+
             const piece: PlacedPiece = {
               id: item.id,
               specId: item.specId,
@@ -108,7 +110,7 @@ export function packMultiColumnSimple(
               boardIndex: currentBoardIndex,
               stripIndex: strips.length,
             }
-            
+
             strip.pieces.push(piece)
             placed.push(piece)
             currentX = x + pieceWidth
@@ -120,7 +122,7 @@ export function packMultiColumnSimple(
           i++
         }
       }
-      
+
       if (strip.pieces.length > 0) {
         strip.usedWidth = currentX
         strips.push(strip)
@@ -129,7 +131,7 @@ export function packMultiColumnSimple(
         break
       }
     }
-    
+
     if (placed.length > 0) {
       board.strips = strips
       boards.push(board)
@@ -161,7 +163,7 @@ export function packDynamicColumns(
   }
 
   // Sort by area (for better packing)
-  items.sort((a, b) => (b.w * b.h) - (a.w * a.h))
+  items.sort((a, b) => b.w * b.h - a.w * a.h)
 
   const board: BoardLayout = {
     index: 0,
@@ -172,7 +174,7 @@ export function packDynamicColumns(
   }
 
   const allPieces: PlacedPiece[] = []
-  
+
   // Dynamic columns
   interface Column {
     x: number
@@ -180,30 +182,29 @@ export function packDynamicColumns(
     currentY: number
     strips: Strip[]
   }
-  
+
   const columns: Column[] = []
-  
+
   for (const item of items) {
     let placed = false
-    
+
     // Try both orientations
     const orientations = [
       { w: item.w, h: item.h, rotated: false },
-      ...(allowRotate && item.w !== item.h ? [{ w: item.h, h: item.w, rotated: true }] : [])
+      ...(allowRotate && item.w !== item.h ? [{ w: item.h, h: item.w, rotated: true }] : []),
     ]
-    
+
     // Try to place in existing columns
     for (const orient of orientations) {
       for (const col of columns) {
         if (orient.w <= col.width && col.currentY + orient.h <= boardH) {
           // Can place in this column
-          
+
           // Find or create strip
-          let strip = col.strips.find(s => 
-            s.height === orient.h && 
-            s.usedWidth + orient.w <= s.width
+          let strip = col.strips.find(
+            (s) => s.height === orient.h && s.usedWidth + orient.w <= s.width
           )
-          
+
           if (!strip) {
             strip = {
               x: col.x,
@@ -216,7 +217,7 @@ export function packDynamicColumns(
             col.strips.push(strip)
             col.currentY = Math.max(col.currentY, strip.y + strip.height + kerf)
           }
-          
+
           // Place piece
           const x = strip.x + (strip.usedWidth === 0 ? 0 : strip.usedWidth + kerf)
           const piece: PlacedPiece = {
@@ -230,7 +231,7 @@ export function packDynamicColumns(
             boardIndex: 0,
             stripIndex: board.strips.length,
           }
-          
+
           strip.pieces.push(piece)
           strip.usedWidth = x - strip.x + orient.w
           allPieces.push(piece)
@@ -240,13 +241,11 @@ export function packDynamicColumns(
       }
       if (placed) break
     }
-    
+
     // If not placed, try creating new column
     if (!placed) {
-      const currentX = columns.reduce((sum, col) => 
-        Math.max(sum, col.x + col.width + kerf), 0
-      )
-      
+      const currentX = columns.reduce((sum, col) => Math.max(sum, col.x + col.width + kerf), 0)
+
       for (const orient of orientations) {
         if (currentX + orient.w <= boardW) {
           // Create new column
@@ -256,7 +255,7 @@ export function packDynamicColumns(
             currentY: 0,
             strips: [],
           }
-          
+
           const strip: Strip = {
             x: col.x,
             width: col.width,
@@ -265,7 +264,7 @@ export function packDynamicColumns(
             pieces: [],
             usedWidth: 0,
           }
-          
+
           const piece: PlacedPiece = {
             id: item.id,
             specId: item.specId,
@@ -277,33 +276,33 @@ export function packDynamicColumns(
             boardIndex: 0,
             stripIndex: board.strips.length,
           }
-          
+
           strip.pieces.push(piece)
           strip.usedWidth = orient.w
           col.strips.push(strip)
           col.currentY = orient.h + kerf
-          
+
           columns.push(col)
           if (currentX > 0 && board.columnSplits) {
             board.columnSplits.push(currentX)
           }
-          
+
           allPieces.push(piece)
           placed = true
           break
         }
       }
     }
-    
+
     // If still not placed, packing failed
     if (!placed) {
       return null
     }
   }
-  
+
   // Consolidate all strips
-  board.strips = columns.flatMap(col => col.strips)
-  
+  board.strips = columns.flatMap((col) => col.strips)
+
   return {
     boards: [board],
     allPieces,
@@ -311,12 +310,7 @@ export function packDynamicColumns(
 }
 
 // Count cuts properly
-function computeCuts(
-  boards: BoardLayout[],
-  boardW: number,
-  boardH: number,
-  kerf: number
-): Cut[] {
+function computeCuts(boards: BoardLayout[], boardW: number, boardH: number, kerf: number): Cut[] {
   const cuts: Cut[] = []
   let cutId = 1
 
@@ -325,7 +319,7 @@ function computeCuts(
 
     // Column splits
     if (board.columnSplits) {
-      board.columnSplits.forEach(x => {
+      board.columnSplits.forEach((x) => {
         const key = `V|${board.index}|${x}|0|${x}|${boardH}`
         if (!uniqueCuts.has(key)) {
           uniqueCuts.add(key)
@@ -343,7 +337,7 @@ function computeCuts(
     }
 
     // Horizontal seams between strips
-    board.strips.forEach(strip => {
+    board.strips.forEach((strip) => {
       if (strip.y + strip.height < boardH) {
         const key = `H|${board.index}|${strip.x}|${strip.y + strip.height}|${strip.x + strip.width}|${strip.y + strip.height}`
         if (!uniqueCuts.has(key)) {
@@ -362,13 +356,13 @@ function computeCuts(
     })
 
     // Vertical cuts within strips
-    board.strips.forEach(strip => {
+    board.strips.forEach((strip) => {
       const sortedPieces = strip.pieces.sort((a, b) => a.x - b.x)
-      
+
       sortedPieces.forEach((piece, i) => {
         if (i < sortedPieces.length - 1) {
           const cutX = piece.x + piece.w + kerf / 2
-          
+
           const key = `V|${board.index}|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`
           if (!uniqueCuts.has(key)) {
             uniqueCuts.add(key)
@@ -390,11 +384,11 @@ function computeCuts(
       if (lastPiece) {
         const pieceRight = lastPiece.x + lastPiece.w
         const stripRight = strip.x + strip.width
-        
+
         if (pieceRight < stripRight - kerf) {
           const cutX = pieceRight + kerf / 2
           const key = `V|${board.index}|${cutX}|${strip.y}|${cutX}|${strip.y + strip.height}`
-          
+
           if (!uniqueCuts.has(key)) {
             uniqueCuts.add(key)
             cuts.push({
@@ -420,7 +414,7 @@ export function optimizeV3Fixed(
   config: OptimizationConfig,
   specs: PieceSpec[]
 ): OptimizationResult {
-  const validSpecs = specs.filter(s => s.w > 0 && s.h > 0 && s.qty > 0)
+  const validSpecs = specs.filter((s) => s.w > 0 && s.h > 0 && s.qty > 0)
 
   if (validSpecs.length === 0) {
     return {
@@ -454,20 +448,15 @@ export function optimizeV3Fixed(
     )
   }
 
-  const cuts = computeCuts(
-    result.boards,
-    config.boardWidth,
-    config.boardHeight,
-    config.kerf
-  )
+  const cuts = computeCuts(result.boards, config.boardWidth, config.boardHeight, config.kerf)
 
   const areaPieces = result.allPieces.reduce((acc, p) => acc + p.w * p.h, 0)
   const boardsArea = result.boards.length * config.boardWidth * config.boardHeight
   const utilization = boardsArea > 0 ? areaPieces / boardsArea : 0
 
   // Calculate utilization for each board
-  const boardsWithUtilization = result.boards.map(board => {
-    const boardPieces = result.allPieces.filter(p => p.boardIndex === board.index)
+  const boardsWithUtilization = result.boards.map((board) => {
+    const boardPieces = result.allPieces.filter((p) => p.boardIndex === board.index)
     const boardPiecesArea = boardPieces.reduce((acc, p) => acc + p.w * p.h, 0)
     const boardArea = config.boardWidth * config.boardHeight
     return {

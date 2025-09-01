@@ -60,11 +60,19 @@ export default function MethodologyPage() {
                 <p className="mb-3 text-neutral-600">Définition du problème:</p>
                 <div className="border border-neutral-200 bg-white p-4">
                   <p className="mb-2">Variables de décision:</p>
-                  <div className="pl-4 space-y-1 text-xs">
-                    <p>x<sub>ijk</sub> = 1 si la pièce i est placée sur la planche j en position k</p>
-                    <p>y<sub>j</sub> = 1 si la planche j est utilisée</p>
-                    <p>s<sub>jk</sub> = position de début de la bande k sur la planche j</p>
-                    <p>h<sub>jk</sub> = hauteur de la bande k sur la planche j</p>
+                  <div className="space-y-1 pl-4 text-xs">
+                    <p>
+                      x<sub>ijk</sub> = 1 si la pièce i est placée sur la planche j en position k
+                    </p>
+                    <p>
+                      y<sub>j</sub> = 1 si la planche j est utilisée
+                    </p>
+                    <p>
+                      s<sub>jk</sub> = position de début de la bande k sur la planche j
+                    </p>
+                    <p>
+                      h<sub>jk</sub> = hauteur de la bande k sur la planche j
+                    </p>
                   </div>
                 </div>
               </div>
@@ -72,30 +80,36 @@ export default function MethodologyPage() {
               {/* Objective Functions */}
               <div>
                 <p className="mb-3 text-neutral-600">Fonctions objectif (selon le mode):</p>
-                <div className="border border-neutral-200 bg-white p-4 space-y-4">
+                <div className="space-y-4 border border-neutral-200 bg-white p-4">
                   <div>
-                    <p className="font-semibold mb-2">1. Minimiser les planches utilisées:</p>
+                    <p className="mb-2 font-semibold">1. Minimiser les planches utilisées:</p>
                     <p className="text-center text-lg">
                       min z = Σ<sub>j∈B</sub> y<sub>j</sub>
                     </p>
                   </div>
-                  
+
                   <div>
-                    <p className="font-semibold mb-2">2. Minimiser les chutes (maximiser utilisation):</p>
-                    <p className="text-center text-lg">
-                      min w = Σ<sub>j∈B</sub> y<sub>j</sub> · (W × H) - Σ<sub>i∈P</sub> w<sub>i</sub> × h<sub>i</sub>
+                    <p className="mb-2 font-semibold">
+                      2. Minimiser les chutes (maximiser utilisation):
                     </p>
-                    <p className="text-xs text-neutral-600 text-center mt-1">
+                    <p className="text-center text-lg">
+                      min w = Σ<sub>j∈B</sub> y<sub>j</sub> · (W × H) - Σ<sub>i∈P</sub> w
+                      <sub>i</sub> × h<sub>i</sub>
+                    </p>
+                    <p className="mt-1 text-center text-xs text-neutral-600">
                       où W×H = surface planche, w<sub>i</sub>×h<sub>i</sub> = surface pièce i
                     </p>
                   </div>
-                  
+
                   <div>
-                    <p className="font-semibold mb-2">3. Minimiser les coupes (objectif multi-critères):</p>
-                    <p className="text-center text-lg">
-                      min c = α · Σ<sub>j∈B</sub> cuts<sub>j</sub> + β · Σ<sub>j∈B</sub> y<sub>j</sub>
+                    <p className="mb-2 font-semibold">
+                      3. Minimiser les coupes (objectif multi-critères):
                     </p>
-                    <p className="text-xs text-neutral-600 text-center mt-1">
+                    <p className="text-center text-lg">
+                      min c = α · Σ<sub>j∈B</sub> cuts<sub>j</sub> + β · Σ<sub>j∈B</sub> y
+                      <sub>j</sub>
+                    </p>
+                    <p className="mt-1 text-center text-xs text-neutral-600">
                       où α, β sont des poids de pondération
                     </p>
                   </div>
@@ -122,7 +136,8 @@ export default function MethodologyPage() {
                     <div>
                       <p className="font-medium">2. Non-chevauchement horizontal:</p>
                       <p className="ml-4">
-                        x<sub>i</sub> + w<sub>i</sub> + kerf ≤ x<sub>i'</sub> ∨ x<sub>i'</sub> + w<sub>i'</sub> + kerf ≤ x<sub>i</sub>
+                        x<sub>i</sub> + w<sub>i</sub> + kerf ≤ x<sub>i'</sub> ∨ x<sub>i'</sub> + w
+                        <sub>i'</sub> + kerf ≤ x<sub>i</sub>
                       </p>
                       <p className="ml-4 text-xs text-neutral-600">
                         Pour toutes pièces i, i' dans la même bande
@@ -141,9 +156,7 @@ export default function MethodologyPage() {
 
                     <div>
                       <p className="font-medium">4. Contraintes de guillotine (2-stage):</p>
-                      <p className="ml-4">
-                        ∀ coupe horizontale: traverse toute la largeur
-                      </p>
+                      <p className="ml-4">∀ coupe horizontale: traverse toute la largeur</p>
                       <p className="ml-4">
                         ∀ coupe verticale dans bande: de haut en bas de la bande
                       </p>
@@ -162,7 +175,8 @@ export default function MethodologyPage() {
                     <div>
                       <p className="font-medium">6. Rotation (si autorisée):</p>
                       <p className="ml-4">
-                        r<sub>i</sub> ∈ {`{0,1}`} où r<sub>i</sub>=1 ⟹ (w<sub>i</sub>, h<sub>i</sub>) ← (h<sub>i</sub>, w<sub>i</sub>)
+                        r<sub>i</sub> ∈ {`{0,1}`} où r<sub>i</sub>=1 ⟹ (w<sub>i</sub>, h<sub>i</sub>
+                        ) ← (h<sub>i</sub>, w<sub>i</sub>)
                       </p>
                     </div>
                   </div>
@@ -174,10 +188,15 @@ export default function MethodologyPage() {
                 <p className="mb-3 text-neutral-600">Contraintes mode 2-colonnes:</p>
                 <div className="border border-neutral-200 bg-white p-4">
                   <p className="mb-2">Partitionnement vertical forcé:</p>
-                  <div className="pl-4 space-y-1 text-xs">
-                    <p>∃ x<sub>split</sub> ∈ [min(w<sub>i</sub>), W - min(w<sub>i</sub>)]</p>
-                    <p>∀i: x<sub>i</sub> + w<sub>i</sub> ≤ x<sub>split</sub> ∨ x<sub>i</sub> ≥ x<sub>split</sub> + kerf</p>
-                    <p className="text-neutral-600 mt-1">
+                  <div className="space-y-1 pl-4 text-xs">
+                    <p>
+                      ∃ x<sub>split</sub> ∈ [min(w<sub>i</sub>), W - min(w<sub>i</sub>)]
+                    </p>
+                    <p>
+                      ∀i: x<sub>i</sub> + w<sub>i</sub> ≤ x<sub>split</sub> ∨ x<sub>i</sub> ≥ x
+                      <sub>split</sub> + kerf
+                    </p>
+                    <p className="mt-1 text-neutral-600">
                       Force exactement 2 colonnes avec position de split optimisée
                     </p>
                   </div>
@@ -194,9 +213,7 @@ export default function MethodologyPage() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <h2 className="mb-6 font-mono text-sm text-neutral-600">
-            Modes d'Optimisation
-          </h2>
+          <h2 className="mb-6 font-mono text-sm text-neutral-600">Modes d'Optimisation</h2>
 
           <div className="grid gap-6 md:grid-cols-3">
             <div className="border border-neutral-200 bg-white p-6">
@@ -205,7 +222,7 @@ export default function MethodologyPage() {
                 <p className="text-neutral-600">Algorithme: NFDH modifié</p>
                 <p className="text-neutral-600">Complexité: O(n log n)</p>
                 <p className="text-neutral-600">Utilisation: 70-85%</p>
-                <div className="mt-3 p-2 bg-neutral-50 font-mono text-xs">
+                <div className="mt-3 bg-neutral-50 p-2 font-mono text-xs">
                   Placement libre avec tri par hauteur décroissante
                 </div>
               </div>
@@ -217,19 +234,22 @@ export default function MethodologyPage() {
                 <p className="text-neutral-600">Algorithme: Split vertical + NFDH</p>
                 <p className="text-neutral-600">Complexité: O(n² log n)</p>
                 <p className="text-neutral-600">Utilisation: 60-80%</p>
-                <div className="mt-3 p-2 bg-neutral-50 font-mono text-xs">
+                <div className="mt-3 bg-neutral-50 p-2 font-mono text-xs">
                   Optimise position du split pour minimiser les chutes
                 </div>
               </div>
             </div>
 
             <div className="border border-amber-200 bg-amber-50 p-6">
-              <h3 className="mb-3 font-mono text-sm font-bold">Mode Avancé V3 <span className="text-xs bg-amber-200 px-1 py-0.5 rounded">BETA</span></h3>
+              <h3 className="mb-3 font-mono text-sm font-bold">
+                Mode Avancé V3{' '}
+                <span className="rounded bg-amber-200 px-1 py-0.5 text-xs">BETA</span>
+              </h3>
               <div className="space-y-2 text-sm">
                 <p className="text-neutral-600">Algorithme: Multi-colonnes dynamiques</p>
                 <p className="text-neutral-600">Complexité: O(n² × strategies)</p>
                 <p className="text-neutral-600">Utilisation: 75-95%</p>
-                <div className="mt-3 p-2 bg-amber-100 font-mono text-xs">
+                <div className="mt-3 bg-amber-100 p-2 font-mono text-xs">
                   Multi-start avec 5 stratégies de tri différentes
                 </div>
               </div>
@@ -251,40 +271,42 @@ export default function MethodologyPage() {
           <div className="space-y-6">
             <div className="border border-neutral-200 bg-white p-6">
               <h3 className="mb-4 font-mono text-sm font-bold">Stratégies de tri multi-start:</h3>
-              <div className="grid md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-3 bg-neutral-50">
-                  <p className="font-semibold mb-1">1. HEIGHT_DESC:</p>
+              <div className="grid gap-4 font-mono text-xs md:grid-cols-2">
+                <div className="bg-neutral-50 p-3">
+                  <p className="mb-1 font-semibold">1. HEIGHT_DESC:</p>
                   <p>Sort by h descending, then w descending</p>
                   <p className="text-neutral-600">Optimise pour bandes horizontales</p>
                 </div>
-                <div className="p-3 bg-neutral-50">
-                  <p className="font-semibold mb-1">2. WIDTH_DESC:</p>
+                <div className="bg-neutral-50 p-3">
+                  <p className="mb-1 font-semibold">2. WIDTH_DESC:</p>
                   <p>Sort by w descending, then h descending</p>
                   <p className="text-neutral-600">Optimise pour colonnes verticales</p>
                 </div>
-                <div className="p-3 bg-neutral-50">
-                  <p className="font-semibold mb-1">3. AREA_DESC:</p>
+                <div className="bg-neutral-50 p-3">
+                  <p className="mb-1 font-semibold">3. AREA_DESC:</p>
                   <p>Sort by w×h descending</p>
                   <p className="text-neutral-600">Place grandes pièces d'abord</p>
                 </div>
-                <div className="p-3 bg-neutral-50">
-                  <p className="font-semibold mb-1">4. MAX_DIM_DESC:</p>
+                <div className="bg-neutral-50 p-3">
+                  <p className="mb-1 font-semibold">4. MAX_DIM_DESC:</p>
                   <p>Sort by max(w,h) descending</p>
                   <p className="text-neutral-600">Équilibre entre dimensions</p>
                 </div>
-                <div className="p-3 bg-neutral-50 md:col-span-2">
-                  <p className="font-semibold mb-1">5. RANDOM_SHUFFLE:</p>
+                <div className="bg-neutral-50 p-3 md:col-span-2">
+                  <p className="mb-1 font-semibold">5. RANDOM_SHUFFLE:</p>
                   <p>Random permutation with seed</p>
-                  <p className="text-neutral-600">Exploration stochastique de l'espace de solutions</p>
+                  <p className="text-neutral-600">
+                    Exploration stochastique de l'espace de solutions
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className="border border-neutral-200 bg-white p-6">
               <h3 className="mb-4 font-mono text-sm font-bold">Création dynamique de colonnes:</h3>
-              <div className="font-mono text-xs space-y-2">
+              <div className="space-y-2 font-mono text-xs">
                 <p>function createDynamicColumns(pieces, board):</p>
-                <div className="pl-4 space-y-1">
+                <div className="space-y-1 pl-4">
                   <p>columns = []</p>
                   <p>for piece in pieces:</p>
                   <div className="pl-4">
@@ -631,42 +653,50 @@ export default function MethodologyPage() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <h2 className="mb-6 font-mono text-sm text-neutral-600">
-            Améliorations Récentes (2025)
-          </h2>
+          <h2 className="mb-6 font-mono text-sm text-neutral-600">Améliorations Récentes (2025)</h2>
 
           <div className="space-y-4">
             <div className="border-l-4 border-green-500 bg-green-50 p-4">
-              <p className="font-mono text-sm font-bold text-green-900">✓ Optimiseur V3 multi-colonnes</p>
-              <p className="text-sm text-green-800 mt-1">
+              <p className="font-mono text-sm font-bold text-green-900">
+                ✓ Optimiseur V3 multi-colonnes
+              </p>
+              <p className="mt-1 text-sm text-green-800">
                 Création dynamique de colonnes avec multi-start pour exploration optimale
               </p>
             </div>
-            
+
             <div className="border-l-4 border-blue-500 bg-blue-50 p-4">
-              <p className="font-mono text-sm font-bold text-blue-900">✓ Mode 2-colonnes intelligent</p>
-              <p className="text-sm text-blue-800 mt-1">
+              <p className="font-mono text-sm font-bold text-blue-900">
+                ✓ Mode 2-colonnes intelligent
+              </p>
+              <p className="mt-1 text-sm text-blue-800">
                 Optimisation automatique de la position du split vertical
               </p>
             </div>
-            
+
             <div className="border-l-4 border-purple-500 bg-purple-50 p-4">
-              <p className="font-mono text-sm font-bold text-purple-900">✓ Historique de configurations</p>
-              <p className="text-sm text-purple-800 mt-1">
+              <p className="font-mono text-sm font-bold text-purple-900">
+                ✓ Historique de configurations
+              </p>
+              <p className="mt-1 text-sm text-purple-800">
                 Sauvegarde locale des 10 dernières optimisations avec restauration
               </p>
             </div>
-            
+
             <div className="border-l-4 border-amber-500 bg-amber-50 p-4">
-              <p className="font-mono text-sm font-bold text-amber-900">✓ Comptage amélioré des coupes</p>
-              <p className="text-sm text-amber-800 mt-1">
+              <p className="font-mono text-sm font-bold text-amber-900">
+                ✓ Comptage amélioré des coupes
+              </p>
+              <p className="mt-1 text-sm text-amber-800">
                 Détection des coupes inférieures pour pièces plus courtes que la bande
               </p>
             </div>
-            
+
             <div className="border-l-4 border-indigo-500 bg-indigo-50 p-4">
-              <p className="font-mono text-sm font-bold text-indigo-900">✓ Interface utilisateur enrichie</p>
-              <p className="text-sm text-indigo-800 mt-1">
+              <p className="font-mono text-sm font-bold text-indigo-900">
+                ✓ Interface utilisateur enrichie
+              </p>
+              <p className="mt-1 text-sm text-indigo-800">
                 Cartes d'information au survol des pièces découpées avec détails complets
               </p>
             </div>
@@ -751,7 +781,7 @@ export default function MethodologyPage() {
             >
               <p className="mb-2 font-mono text-xs text-neutral-500">[5]</p>
               <p className="text-sm text-neutral-700">
-                Dyckhoff, H. (1990). "A typology of cutting and packing problems". European Journal 
+                Dyckhoff, H. (1990). "A typology of cutting and packing problems". European Journal
                 of Operational Research, 44(2), 145-159.
               </p>
             </motion.div>

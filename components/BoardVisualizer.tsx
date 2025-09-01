@@ -211,24 +211,24 @@ export default function BoardVisualizer({
         id={`board-svg-${board.index}`}
         className="board-svg-container relative overflow-auto rounded-lg bg-neutral-50 p-4"
       >
-        <div className="relative inline-block mx-auto">
+        <div className="relative mx-auto inline-block">
           {/* Invisible overlay for hover interactions */}
-          <div className="absolute inset-0 pointer-events-none z-10" style={{ width, height }}>
-            {board.strips.map((strip) => 
+          <div className="pointer-events-none absolute inset-0 z-10" style={{ width, height }}>
+            {board.strips.map((strip) =>
               strip.pieces.map((piece) => {
                 const px = piece.x * scale
                 const py = piece.y * scale
                 const pw = piece.w * scale
                 const ph = piece.h * scale
-                const spec = specs.find(s => s.id === piece.specId)
-                
+                const spec = specs.find((s) => s.id === piece.specId)
+
                 // Calculate piece number across all pieces
                 let pieceNumber = 0
                 let totalPieces = 0
                 let foundCurrent = false
-                
-                board.strips.forEach(s => {
-                  s.pieces.forEach(p => {
+
+                board.strips.forEach((s) => {
+                  s.pieces.forEach((p) => {
                     totalPieces++
                     if (!foundCurrent) {
                       pieceNumber++
@@ -238,7 +238,7 @@ export default function BoardVisualizer({
                     }
                   })
                 })
-                
+
                 return (
                   <PieceHoverCardPortal
                     key={piece.id}
@@ -248,8 +248,8 @@ export default function BoardVisualizer({
                     totalPieces={totalPieces}
                     boardNumber={board.index + 1}
                   >
-                    <div 
-                      className="absolute pointer-events-auto"
+                    <div
+                      className="pointer-events-auto absolute"
                       style={{
                         left: px,
                         top: py,
@@ -262,184 +262,184 @@ export default function BoardVisualizer({
               })
             )}
           </div>
-          
+
           <svg
             width={width}
             height={height}
             className="mx-auto"
             style={{ minWidth: width, minHeight: height }}
           >
-          {/* Board background with dimensions */}
-          <g>
-            <rect
-              width={boardWidth * scale}
-              height={boardHeight * scale}
-              className="fill-white stroke-neutral-900"
-              strokeWidth={2}
-            />
-
-            {/* Dimension labels */}
-            <text
-              x={(boardWidth * scale) / 2}
-              y={-5}
-              textAnchor="middle"
-              className="fill-neutral-600"
-              fontSize={dimFontSize}
-            >
-              {boardWidth} mm
-            </text>
-            <text
-              x={-5}
-              y={(boardHeight * scale) / 2}
-              textAnchor="middle"
-              className="fill-neutral-600"
-              fontSize={dimFontSize}
-              transform={`rotate(-90 ${-5} ${(boardHeight * scale) / 2})`}
-            >
-              {boardHeight} mm
-            </text>
-          </g>
-
-          {/* Column splits (if any) */}
-          <AnimatePresence>
-            {(board.columnSplits || []).map((x, i) => (
-              <motion.line
-                key={`split-${i}`}
-                x1={x * scale}
-                y1={0}
-                x2={x * scale}
-                y2={height}
-                className="stroke-green-500"
+            {/* Board background with dimensions */}
+            <g>
+              <rect
+                width={boardWidth * scale}
+                height={boardHeight * scale}
+                className="fill-white stroke-neutral-900"
                 strokeWidth={2}
-                strokeDasharray="6 6"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
               />
-            ))}
-          </AnimatePresence>
 
-          {/* Pieces */}
-          <AnimatePresence>
-            {board.strips.map((strip, stripIndex) => (
-              <g key={`strip-${stripIndex}`}>
-                {strip.pieces.map((piece, pieceIndex) => {
-                  const px = piece.x * scale
-                  const py = piece.y * scale
-                  const pw = piece.w * scale
-                  const ph = piece.h * scale
-                  const color = getPieceColorBySpecId(piece.specId, specs)
+              {/* Dimension labels */}
+              <text
+                x={(boardWidth * scale) / 2}
+                y={-5}
+                textAnchor="middle"
+                className="fill-neutral-600"
+                fontSize={dimFontSize}
+              >
+                {boardWidth} mm
+              </text>
+              <text
+                x={-5}
+                y={(boardHeight * scale) / 2}
+                textAnchor="middle"
+                className="fill-neutral-600"
+                fontSize={dimFontSize}
+                transform={`rotate(-90 ${-5} ${(boardHeight * scale) / 2})`}
+              >
+                {boardHeight} mm
+              </text>
+            </g>
 
-                  return (
-                    <motion.g
-                      key={piece.id}
-                      initial={{
-                        opacity: 0,
-                        y: -20,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        delay: stripIndex * 0.05 + pieceIndex * 0.02,
-                        type: 'spring',
-                        stiffness: 400,
-                        damping: 25,
-                      }}
-                    >
-                      <motion.rect
-                        x={px}
-                        y={py}
-                        width={pw}
-                        height={ph}
-                        fill={color.light}
-                        stroke={color.border}
-                        strokeWidth={1.5}
-                        whileHover={{
-                          fill: color.bg,
-                          opacity: 0.6,
-                          transition: { duration: 0.15 },
+            {/* Column splits (if any) */}
+            <AnimatePresence>
+              {(board.columnSplits || []).map((x, i) => (
+                <motion.line
+                  key={`split-${i}`}
+                  x1={x * scale}
+                  y1={0}
+                  x2={x * scale}
+                  y2={height}
+                  className="stroke-green-500"
+                  strokeWidth={2}
+                  strokeDasharray="6 6"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                />
+              ))}
+            </AnimatePresence>
+
+            {/* Pieces */}
+            <AnimatePresence>
+              {board.strips.map((strip, stripIndex) => (
+                <g key={`strip-${stripIndex}`}>
+                  {strip.pieces.map((piece, pieceIndex) => {
+                    const px = piece.x * scale
+                    const py = piece.y * scale
+                    const pw = piece.w * scale
+                    const ph = piece.h * scale
+                    const color = getPieceColorBySpecId(piece.specId, specs)
+
+                    return (
+                      <motion.g
+                        key={piece.id}
+                        initial={{
+                          opacity: 0,
+                          y: -20,
                         }}
-                      />
-
-                      {/* Piece ID */}
-                      <text
-                        x={px + 6}
-                        y={py + 16}
-                        className="pointer-events-none fill-neutral-900 font-medium"
-                        fontSize={fontSize}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                        }}
+                        transition={{
+                          delay: stripIndex * 0.05 + pieceIndex * 0.02,
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 25,
+                        }}
                       >
-                        {piece.id}
-                      </text>
+                        <motion.rect
+                          x={px}
+                          y={py}
+                          width={pw}
+                          height={ph}
+                          fill={color.light}
+                          stroke={color.border}
+                          strokeWidth={1.5}
+                          whileHover={{
+                            fill: color.bg,
+                            opacity: 0.6,
+                            transition: { duration: 0.15 },
+                          }}
+                        />
 
-                      {/* Piece dimensions and rotation indicator */}
-                      <text
-                        x={px + 6}
-                        y={py + 30}
-                        className="pointer-events-none fill-neutral-600"
-                        fontSize={dimFontSize}
-                      >
-                        {Math.round(piece.w)}×{Math.round(piece.h)} mm
-                        {piece.rotated && ' ↻'}
-                      </text>
-                    </motion.g>
-                  )
-                })}
-              </g>
-            ))}
-          </AnimatePresence>
+                        {/* Piece ID */}
+                        <text
+                          x={px + 6}
+                          y={py + 16}
+                          className="pointer-events-none fill-neutral-900 font-medium"
+                          fontSize={fontSize}
+                        >
+                          {piece.id}
+                        </text>
 
-          {/* Cut lines with badges */}
-          <AnimatePresence>
-            {boardCuts.map((cut, i) => {
-              const x1 = cut.x1 * scale
-              const y1 = cut.y1 * scale
-              const x2 = cut.x2 * scale
-              const y2 = cut.y2 * scale
-              const cx = (x1 + x2) / 2
-              const cy = (y1 + y2) / 2
+                        {/* Piece dimensions and rotation indicator */}
+                        <text
+                          x={px + 6}
+                          y={py + 30}
+                          className="pointer-events-none fill-neutral-600"
+                          fontSize={dimFontSize}
+                        >
+                          {Math.round(piece.w)}×{Math.round(piece.h)} mm
+                          {piece.rotated && ' ↻'}
+                        </text>
+                      </motion.g>
+                    )
+                  })}
+                </g>
+              ))}
+            </AnimatePresence>
 
-              return (
-                <motion.g
-                  key={`cut-${cut.id}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    delay: 0.8 + i * 0.03,
-                    duration: 0.3,
-                  }}
-                >
-                  {/* Cut line */}
-                  <motion.line
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    className="stroke-red-500"
-                    strokeWidth={cutStrokeWidth}
-                    strokeDasharray="6 6"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
+            {/* Cut lines with badges */}
+            <AnimatePresence>
+              {boardCuts.map((cut, i) => {
+                const x1 = cut.x1 * scale
+                const y1 = cut.y1 * scale
+                const x2 = cut.x2 * scale
+                const y2 = cut.y2 * scale
+                const cx = (x1 + x2) / 2
+                const cy = (y1 + y2) / 2
 
-                  {/* Cut badge */}
-                  <circle cx={cx} cy={cy} r={cutRadius} className="fill-red-500" />
-                  <text
-                    x={cx}
-                    y={cy + 3}
-                    textAnchor="middle"
-                    className="pointer-events-none fill-white font-medium"
-                    fontSize={fontSize - 2}
+                return (
+                  <motion.g
+                    key={`cut-${cut.id}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      delay: 0.8 + i * 0.03,
+                      duration: 0.3,
+                    }}
                   >
-                    {cut.id}
-                  </text>
-                </motion.g>
-              )
-            })}
-          </AnimatePresence>
-        </svg>
+                    {/* Cut line */}
+                    <motion.line
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      className="stroke-red-500"
+                      strokeWidth={cutStrokeWidth}
+                      strokeDasharray="6 6"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+
+                    {/* Cut badge */}
+                    <circle cx={cx} cy={cy} r={cutRadius} className="fill-red-500" />
+                    <text
+                      x={cx}
+                      y={cy + 3}
+                      textAnchor="middle"
+                      className="pointer-events-none fill-white font-medium"
+                      fontSize={fontSize - 2}
+                    >
+                      {cut.id}
+                    </text>
+                  </motion.g>
+                )
+              })}
+            </AnimatePresence>
+          </svg>
         </div>
       </div>
 

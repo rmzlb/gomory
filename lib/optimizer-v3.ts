@@ -439,7 +439,7 @@ function countMultiColumnCuts(
   columnStrips.forEach((strips, colX) => {
     // Sort strips by Y position
     const sortedStrips = strips.sort((a, b) => a.y - b.y)
-    
+
     // Horizontal seams between strips in this column
     sortedStrips.forEach((strip, idx) => {
       if (idx < sortedStrips.length - 1) {
@@ -452,7 +452,7 @@ function countMultiColumnCuts(
     // Vertical cuts within each strip
     sortedStrips.forEach((strip) => {
       const sortedPieces = strip.pieces.sort((a, b) => a.x - b.x)
-      
+
       sortedPieces.forEach((piece, i) => {
         if (i < sortedPieces.length - 1) {
           // Cut between adjacent pieces
@@ -466,7 +466,7 @@ function countMultiColumnCuts(
       if (lastPiece) {
         const pieceRight = lastPiece.x + lastPiece.w
         const stripRight = strip.x + strip.width
-        
+
         // If piece doesn't reach strip edge, add closing cut
         if (pieceRight < stripRight - kerf) {
           const cutX = pieceRight + kerf / 2

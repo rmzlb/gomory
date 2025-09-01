@@ -592,7 +592,7 @@ export function computeCuts(
           }
         }
       }
-      
+
       // Horizontal bottom cuts for pieces shorter than strip height
       for (const p of st.pieces) {
         if (p.h < st.height - 1e-6) {

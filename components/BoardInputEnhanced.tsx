@@ -25,13 +25,10 @@ interface BoardInputProps {
 // Tooltip component
 function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
   const [show, setShow] = useState(false)
-  
+
   return (
     <div className="relative inline-block">
-      <div
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-      >
+      <div onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
         {children}
       </div>
       <AnimatePresence>
@@ -40,11 +37,11 @@ function Tooltip({ children, content }: { children: React.ReactNode; content: st
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 rounded-lg bg-neutral-900 p-3 text-xs text-white shadow-lg z-50"
+            className="absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 rounded-lg bg-neutral-900 p-3 text-xs text-white shadow-lg"
           >
             <div className="relative">
               {content}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-neutral-900" />
+              <div className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-neutral-900" />
             </div>
           </motion.div>
         )}
@@ -56,8 +53,18 @@ function Tooltip({ children, content }: { children: React.ReactNode; content: st
 // Info icon component
 function InfoIcon() {
   return (
-    <svg className="w-4 h-4 text-neutral-400 hover:text-neutral-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <svg
+      className="h-4 w-4 text-neutral-400 transition-colors hover:text-neutral-600"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
     </svg>
   )
 }
@@ -76,7 +83,7 @@ export default function BoardInputEnhanced({
   const [widthValue, setWidthValue] = useState(boardWidth.toString())
   const [heightValue, setHeightValue] = useState(boardHeight.toString())
   const [kerfValue, setKerfValue] = useState(kerf.toString())
-  
+
   // Optimizer mode: 'standard', 'two-columns', 'advanced' - Default to 'two-columns'
   const [optimizerMode, setOptimizerMode] = useState<'standard' | 'two-columns' | 'advanced'>(
     useAdvancedOptimizer ? 'advanced' : 'two-columns'
@@ -98,7 +105,7 @@ export default function BoardInputEnhanced({
   // Handle optimizer mode changes
   const handleOptimizerModeChange = (mode: 'standard' | 'two-columns' | 'advanced') => {
     setOptimizerMode(mode)
-    
+
     switch (mode) {
       case 'standard':
         onChange({ forceTwoColumns: false, useAdvancedOptimizer: false })
@@ -119,7 +126,7 @@ export default function BoardInputEnhanced({
       {/* Board dimensions */}
       <div className="space-y-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="mb-1 flex items-center gap-2">
             <label className="text-xs text-neutral-500">Largeur</label>
             <Tooltip content="Largeur de la planche en millimètres. Standard: 1220, 1500, 1830, 2440mm">
               <InfoIcon />
@@ -151,7 +158,7 @@ export default function BoardInputEnhanced({
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="mb-1 flex items-center gap-2">
             <label className="text-xs text-neutral-500">Longueur</label>
             <Tooltip content="Longueur de la planche en millimètres. Standard: 2440, 2750, 3050, 5000mm">
               <InfoIcon />
@@ -183,7 +190,7 @@ export default function BoardInputEnhanced({
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="mb-1 flex items-center gap-2">
             <label className="text-xs text-neutral-500">Trait de scie</label>
             <Tooltip content="Épaisseur du trait de scie (kerf) en mm. Typique: 2-4mm pour scie circulaire, 0.5-1mm pour laser">
               <InfoIcon />
@@ -217,15 +224,15 @@ export default function BoardInputEnhanced({
 
       {/* Optimizer mode selection - Compact */}
       <div className="space-y-3 border-t border-neutral-100 pt-3">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="mb-2 flex items-center gap-2">
           <label className="text-xs font-medium text-neutral-600">Mode d'optimisation</label>
         </div>
-        
+
         <div className="flex gap-2">
           <motion.label
-            className={`flex-1 cursor-pointer p-2 rounded-lg border transition-all text-center ${
-              optimizerMode === 'standard' 
-                ? 'border-blue-400 bg-blue-50' 
+            className={`flex-1 cursor-pointer rounded-lg border p-2 text-center transition-all ${
+              optimizerMode === 'standard'
+                ? 'border-blue-400 bg-blue-50'
                 : 'border-neutral-200 hover:border-neutral-300'
             }`}
             whileTap={{ scale: 0.98 }}
@@ -239,15 +246,15 @@ export default function BoardInputEnhanced({
             <Tooltip content="Algorithme de placement libre. Utilise plusieurs planches si nécessaire pour placer toutes les pièces.">
               <div>
                 <div className="text-xs font-medium text-neutral-900">Standard</div>
-                <div className="text-[10px] text-neutral-500 mt-0.5">Placement libre</div>
+                <div className="mt-0.5 text-[10px] text-neutral-500">Placement libre</div>
               </div>
             </Tooltip>
           </motion.label>
 
           <motion.label
-            className={`flex-1 cursor-pointer p-2 rounded-lg border transition-all text-center ${
-              optimizerMode === 'two-columns' 
-                ? 'border-blue-400 bg-blue-50' 
+            className={`flex-1 cursor-pointer rounded-lg border p-2 text-center transition-all ${
+              optimizerMode === 'two-columns'
+                ? 'border-blue-400 bg-blue-50'
                 : 'border-neutral-200 hover:border-neutral-300'
             }`}
             whileTap={{ scale: 0.98 }}
@@ -261,15 +268,15 @@ export default function BoardInputEnhanced({
             <Tooltip content="Force 2 colonnes verticales pour simplifier la découpe. Idéal pour découpe manuelle.">
               <div>
                 <div className="text-xs font-medium text-neutral-900">2 colonnes</div>
-                <div className="text-[10px] text-neutral-500 mt-0.5">Découpe simple</div>
+                <div className="mt-0.5 text-[10px] text-neutral-500">Découpe simple</div>
               </div>
             </Tooltip>
           </motion.label>
 
           <motion.label
-            className={`flex-1 cursor-pointer p-2 rounded-lg border transition-all text-center ${
-              optimizerMode === 'advanced' 
-                ? 'border-blue-400 bg-blue-50' 
+            className={`flex-1 cursor-pointer rounded-lg border p-2 text-center transition-all ${
+              optimizerMode === 'advanced'
+                ? 'border-blue-400 bg-blue-50'
                 : 'border-neutral-200 hover:border-neutral-300'
             }`}
             whileTap={{ scale: 0.98 }}
@@ -284,9 +291,11 @@ export default function BoardInputEnhanced({
               <div>
                 <div className="flex items-center justify-center gap-1">
                   <div className="text-xs font-medium text-neutral-900">Avancé</div>
-                  <span className="text-[9px] px-1 py-0 bg-amber-100 text-amber-700 rounded font-medium">BETA</span>
+                  <span className="rounded bg-amber-100 px-1 py-0 text-[9px] font-medium text-amber-700">
+                    BETA
+                  </span>
                 </div>
-                <div className="text-[10px] text-neutral-500 mt-0.5">Multi-colonnes</div>
+                <div className="mt-0.5 text-[10px] text-neutral-500">Multi-colonnes</div>
               </div>
             </Tooltip>
           </motion.label>
@@ -295,7 +304,7 @@ export default function BoardInputEnhanced({
 
       {/* Objective selection */}
       <div className="space-y-3 border-t border-neutral-100 pt-3">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="mb-1 flex items-center gap-2">
           <label className="text-xs font-medium text-neutral-600">Objectif prioritaire</label>
           <Tooltip content="Définit ce que l'algorithme cherche à optimiser en priorité">
             <InfoIcon />
@@ -315,7 +324,7 @@ export default function BoardInputEnhanced({
       {/* Rotation option */}
       <div className="space-y-3 border-t border-neutral-100 pt-3">
         <motion.label
-          className="group flex cursor-pointer items-center justify-between p-3 rounded-lg border border-neutral-200 hover:border-neutral-300 transition-all"
+          className="group flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 p-3 transition-all hover:border-neutral-300"
           whileTap={{ scale: 0.98 }}
         >
           <div className="flex items-center gap-3">
@@ -327,7 +336,9 @@ export default function BoardInputEnhanced({
             />
             <div>
               <div className="text-sm font-medium text-neutral-700">Autoriser rotation 90°</div>
-              <div className="text-xs text-neutral-500">Les pièces peuvent être tournées pour mieux s'adapter</div>
+              <div className="text-xs text-neutral-500">
+                Les pièces peuvent être tournées pour mieux s'adapter
+              </div>
             </div>
           </div>
           <Tooltip content="Permet aux pièces d'être pivotées de 90° pour optimiser le placement. Améliore généralement l'utilisation de +5-15%">
@@ -335,7 +346,6 @@ export default function BoardInputEnhanced({
           </Tooltip>
         </motion.label>
       </div>
-
     </div>
   )
 }

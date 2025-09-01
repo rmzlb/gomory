@@ -177,14 +177,15 @@ export default function TestsCard({
         if (piece.h < strip.height - eps) {
           // This piece needs a bottom cut
           const yBottom = strip.y + piece.h
-          const hasBottomCut = result.cuts.some(cut => 
-            cut.type === 'H' &&
-            cut.boardIndex === board.index &&
-            Math.abs(cut.y1 - yBottom) < eps &&
-            cut.x1 <= piece.x + eps &&
-            cut.x2 >= piece.x + piece.w - eps
+          const hasBottomCut = result.cuts.some(
+            (cut) =>
+              cut.type === 'H' &&
+              cut.boardIndex === board.index &&
+              Math.abs(cut.y1 - yBottom) < eps &&
+              cut.x1 <= piece.x + eps &&
+              cut.x2 >= piece.x + piece.w - eps
           )
-          
+
           if (!hasBottomCut) {
             issues.push(`Coupe bas manquante: ${piece.id} @ Y=${yBottom}`)
             bottomCutsMissing = true
