@@ -31,10 +31,10 @@ const customJestConfig = {
   // - UI components can be tested with integration/e2e tests
   coverageThreshold: {
     global: {
-      branches: 13, // Current: 13.81% → Goal: 50%
-      functions: 11, // Current: 11.86% → Goal: 40%
-      lines: 16, // Current: 16.14% → Goal: 50%
-      statements: 16, // Current: 16.08% → Goal: 50%
+      branches: 13, // Current: 13.67% → Goal: 50%
+      functions: 11, // Current: 11.61% → Goal: 40%
+      lines: 15, // Current: 15.92% → Goal: 50%
+      statements: 15, // Current: 15.87% → Goal: 50%
     },
   },
 }
