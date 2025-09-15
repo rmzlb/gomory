@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/react'
 
 export function AnalyticsProvider() {
   return (
@@ -8,5 +8,5 @@ export function AnalyticsProvider() {
       mode={process.env.NODE_ENV === 'production' ? 'production' : 'development'}
       debug={process.env.NODE_ENV === 'development'}
     />
-  );
+  )
 }
