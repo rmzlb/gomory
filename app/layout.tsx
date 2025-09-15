@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 
 import Navigation from '@/components/Navigation'
 import { LanguageProvider } from '@/contexts/LanguageContext'
+import { AnalyticsProvider } from '@/components/AnalyticsProvider'
 
 import type { Metadata } from 'next'
 import './globals.css'
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navigation />
           <main className="pt-14">{children}</main>
         </LanguageProvider>
+        <AnalyticsProvider />
       </body>
     </html>
   )

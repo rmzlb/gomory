@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 
+import { analytics } from '@/lib/analytics'
+
 export default function HowItWorks() {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -14,7 +16,15 @@ export default function HowItWorks() {
     >
       {/* Header with toggle */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => {
+          const newExpanded = !isExpanded
+          setIsExpanded(newExpanded)
+
+          // Track when methodology is viewed (expanded)
+          if (newExpanded) {
+            analytics.methodologyViewed()
+          }
+        }}
         className="group flex w-full items-center justify-between"
       >
         <div className="flex items-center gap-3">

@@ -2,12 +2,18 @@
 
 import { motion } from 'motion/react'
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 import Logo from '@/components/Logo'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { analytics } from '@/lib/analytics'
 
 export default function MethodologyPage() {
   const { t } = useLanguage()
+
+  useEffect(() => {
+    analytics.methodologyViewed()
+  }, [])
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">

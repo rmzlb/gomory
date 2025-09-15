@@ -5,6 +5,7 @@ import jsPDF from 'jspdf'
 import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 
+import { analytics } from '@/lib/analytics'
 import type { OptimizationResult, PieceSpec } from '@/lib/types'
 
 interface ExportPanelProps {
@@ -85,6 +86,13 @@ export default function ExportPanel({ result, specs, boardWidth, boardHeight }: 
 
       // Save PDF
       pdf.save(`plan-decoupe-${new Date().getTime()}.pdf`)
+
+      // Track analytics event
+      analytics.resultsExported({
+        format: 'pdf',
+        utilizationRate: result.utilization * 100,
+        piecesCount: result.allPieces.length,
+      })
     } catch (error) {
       console.error('Export PDF error:', error)
     } finally {
@@ -132,6 +140,13 @@ export default function ExportPanel({ result, specs, boardWidth, boardHeight }: 
           }
         }
       }
+
+      // Track analytics event
+      analytics.resultsExported({
+        format: 'png',
+        utilizationRate: result.utilization * 100,
+        piecesCount: result.allPieces.length,
+      })
     } catch (error) {
       console.error('Export image error:', error)
     } finally {

@@ -5,6 +5,7 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 
 import { optimizeCutting } from '@/lib/optimizer'
+import { analytics } from '@/lib/analytics'
 import { saveToHistory } from '@/lib/utils/history'
 import { validateConfiguration } from '@/lib/utils/validation'
 
@@ -63,6 +64,15 @@ export default function CuttingOptimizer() {
       setResult(res)
       setIsCalculating(false)
       setShowResults(true)
+
+      // Track analytics event
+      analytics.calculatorUsed({
+        stockWidth: config.boardWidth,
+        stockHeight: config.boardHeight,
+        piecesCount: pieces.reduce((sum, p) => sum + p.qty, 0),
+        method: config.useAdvancedOptimizer ? 'v3' : config.forceTwoColumns ? 'v2' : 'v1',
+        utilizationRate: res.utilization * 100,
+      })
 
       // Save to history
       saveToHistory(config, pieces, res)
