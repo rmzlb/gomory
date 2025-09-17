@@ -422,6 +422,10 @@ export function optimizeV3Fixed(
       allPieces: [],
       cuts: [],
       utilization: 0,
+      boardWidth: config.boardWidth,
+      boardHeight: config.boardHeight,
+      boardOrientation: 'original',
+      heuristics: [],
     }
   }
 
@@ -470,5 +474,9 @@ export function optimizeV3Fixed(
     allPieces: result.allPieces,
     cuts,
     utilization,
+    boardWidth: config.boardWidth,
+    boardHeight: config.boardHeight,
+    boardOrientation: 'original',
+    heuristics: [],
   }
 }

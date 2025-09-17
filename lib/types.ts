@@ -47,11 +47,27 @@ export type Cut = {
   boardIndex: number
 }
 
+export type HeuristicTrace = {
+  id: string
+  label: string
+  score: number
+  metrics: {
+    utilization: number
+    boards: number
+    cuts: number
+  }
+  selected: boolean
+}
+
 export type OptimizationResult = {
   boards: BoardLayout[]
   allPieces: PlacedPiece[]
   cuts: Cut[]
   utilization: number
+  boardWidth: number
+  boardHeight: number
+  boardOrientation: 'original' | 'rotated'
+  heuristics: HeuristicTrace[]
 }
 
 export type OptimizationConfig = {

@@ -542,6 +542,10 @@ export function optimizeV3(config: OptimizationConfig, specs: PieceSpec[]): Opti
       allPieces: [],
       cuts: [],
       utilization: 0,
+      boardWidth: config.boardWidth,
+      boardHeight: config.boardHeight,
+      boardOrientation: 'original',
+      heuristics: [],
     }
   }
 
@@ -588,6 +592,10 @@ export function optimizeV3(config: OptimizationConfig, specs: PieceSpec[]): Opti
       allPieces: [],
       cuts: [],
       utilization: 0,
+      boardWidth: config.boardWidth,
+      boardHeight: config.boardHeight,
+      boardOrientation: 'original',
+      heuristics: [],
     }
   }
 
@@ -652,5 +660,9 @@ export function optimizeV3(config: OptimizationConfig, specs: PieceSpec[]): Opti
     allPieces: best.pieces,
     cuts,
     utilization: best.utilization,
+    boardWidth: config.boardWidth,
+    boardHeight: config.boardHeight,
+    boardOrientation: 'original',
+    heuristics: [],
   }
 }

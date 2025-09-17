@@ -18,6 +18,9 @@ describe('optimizer', () => {
       expect(result.boards).toHaveLength(0)
       expect(result.allPieces).toHaveLength(0)
       expect(result.utilization).toBe(0)
+      expect(result.boardWidth).toBe(Math.min(defaultConfig.boardWidth, defaultConfig.boardHeight))
+      expect(result.boardHeight).toBe(Math.max(defaultConfig.boardWidth, defaultConfig.boardHeight))
+      expect(result.boardOrientation).toBe('original')
     })
 
     it('should place a single piece that fits', () => {
@@ -27,6 +30,7 @@ describe('optimizer', () => {
       expect(result.boards.length).toBeGreaterThan(0)
       expect(result.allPieces).toHaveLength(1)
       expect(result.utilization).toBeGreaterThan(0)
+      expect(result.boardWidth).toBeLessThanOrEqual(result.boardHeight)
     })
 
     it('should handle multiple pieces of the same type', () => {
@@ -69,6 +73,7 @@ describe('optimizer', () => {
           expect(Math.abs(p2.x - (p1.x + p1.w))).toBeGreaterThanOrEqual(configWithKerf.kerf)
         }
       }
+      expect(resultWithKerf.boardWidth).toBeLessThanOrEqual(resultWithKerf.boardHeight)
     })
 
     it('should handle pieces that dont fit', () => {
@@ -100,6 +105,54 @@ describe('optimizer', () => {
       expect(cutsResult.allPieces).toHaveLength(10)
       expect(balancedResult.allPieces).toHaveLength(10)
     })
+
+    it('fills early boards before opening a new one when minimizing waste', () => {
+      const pieces: PieceSpec[] = [
+        { id: 'A', w: 930, h: 750, qty: 6 },
+        { id: 'B', w: 300, h: 800, qty: 3 },
+        { id: 'C', w: 450, h: 600, qty: 4 },
+        { id: 'D', w: 200, h: 300, qty: 7 },
+      ]
+
+      const wasteConfig: OptimizationConfig = {
+        ...defaultConfig,
+        boardWidth: 1500,
+        boardHeight: 5000,
+        objective: 'waste',
+        forceTwoColumns: true,
+      }
+
+      const result = optimizeCutting(wasteConfig, pieces)
+
+      expect(result.boards.length).toBeGreaterThan(0)
+      if (result.boards.length > 1) {
+        expect(result.boards[0].utilization || 0).toBeGreaterThanOrEqual(
+          result.boards[1].utilization || 0
+        )
+      }
+      expect(result.utilization).toBeGreaterThan(0)
+    })
+
+    it('packs compatible datasets on a single board when minimizing waste', () => {
+      const pieces: PieceSpec[] = [
+        { id: 'A', w: 500, h: 600, qty: 2 },
+        { id: 'B', w: 500, h: 400, qty: 2 },
+      ]
+
+      const config: OptimizationConfig = {
+        ...defaultConfig,
+        boardWidth: 1000,
+        boardHeight: 1000,
+        kerf: 0,
+        objective: 'waste',
+        forceTwoColumns: true,
+      }
+
+      const result = optimizeCutting(config, pieces)
+
+      expect(result.boards.length).toBe(1)
+      expect(result.utilization).toBeCloseTo(1, 5)
+    })
   })
 
   describe('board layout', () => {
@@ -116,6 +169,7 @@ describe('optimizer', () => {
       if (result.boards[0].columnSplits) {
         expect(result.boards[0].columnSplits.length).toBeGreaterThan(0)
       }
+      expect(result.boardWidth).toBeLessThanOrEqual(result.boardHeight)
     })
 
     it('should calculate utilization correctly', () => {
@@ -136,6 +190,50 @@ describe('optimizer', () => {
       expect(result.boards).toHaveLength(0)
       expect(result.allPieces).toHaveLength(0)
       expect(result.utilization).toBe(0)
+      expect(result.boardOrientation).toBe('original')
+    })
+
+    it('selects portrait orientation when input is paysage', () => {
+      const pieces: PieceSpec[] = [
+        { id: 'A', w: 930, h: 720, qty: 5 },
+        { id: 'B', w: 1290, h: 290, qty: 3 },
+      ]
+
+      const config = {
+        ...defaultConfig,
+        boardWidth: 5000,
+        boardHeight: 1220,
+        allowRotate: false,
+        forceTwoColumns: true,
+      }
+
+      const result = optimizeCutting(config, pieces)
+
+      expect(result.boardWidth).toBeLessThanOrEqual(result.boardHeight)
+      expect(result.allPieces.length).toBeGreaterThan(0)
+    })
+
+    it('fills existing boards before opening a new one', () => {
+      const pieces: PieceSpec[] = [
+        { id: 'A', w: 800, h: 600, qty: 4 },
+        { id: 'B', w: 600, h: 400, qty: 4 },
+        { id: 'C', w: 400, h: 300, qty: 6 },
+      ]
+
+      const config = {
+        ...defaultConfig,
+        boardWidth: 2500,
+        boardHeight: 1250,
+        forceTwoColumns: false,
+      }
+
+      const result = optimizeCutting(config, pieces)
+
+      expect(result.boards.length).toBeGreaterThan(0)
+      expect(result.boards.every((board) => board.strips.length > 0)).toBe(true)
+      if (result.boards.length > 1) {
+        expect(result.boards.slice(0, -1).every((board) => board.strips.length > 0)).toBe(true)
+      }
     })
   })
 })

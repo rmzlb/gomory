@@ -304,21 +304,52 @@ export default function BoardInputEnhanced({
 
       {/* Objective selection */}
       <div className="space-y-3 border-t border-neutral-100 pt-3">
-        <div className="mb-1 flex items-center gap-2">
+        <div className="mb-2 flex items-center gap-2">
           <label className="text-xs font-medium text-neutral-600">Objectif prioritaire</label>
           <Tooltip content="Définit ce que l'algorithme cherche à optimiser en priorité">
             <InfoIcon />
           </Tooltip>
         </div>
-        <select
-          value={objective}
-          onChange={(e) => onChange({ objective: e.target.value as any })}
-          className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm transition-colors focus:border-neutral-400"
-        >
-          <option value="waste">Minimiser les chutes (max utilisation)</option>
-          <option value="balanced">Équilibré (compromis chutes/coupes)</option>
-          <option value="cuts">Minimiser les coupes (plus rapide)</option>
-        </select>
+        <div className="flex gap-2">
+          {[
+            {
+              value: 'waste' as const,
+              title: 'Minimiser les chutes',
+              helper: 'Maximise l’utilisation matière',
+            },
+            {
+              value: 'balanced' as const,
+              title: 'Équilibré',
+              helper: 'Compromis chutes/coupes',
+            },
+            {
+              value: 'cuts' as const,
+              title: 'Minimiser les coupes',
+              helper: 'Moins de coupes au détriment du rendement',
+            },
+          ].map((option) => (
+            <motion.label
+              key={option.value}
+              className={`flex-1 cursor-pointer rounded-lg border p-2 text-center transition-all ${
+                objective === option.value
+                  ? 'border-blue-400 bg-blue-50'
+                  : 'border-neutral-200 hover:border-neutral-300'
+              }`}
+              whileTap={{ scale: 0.98 }}
+            >
+              <input
+                type="radio"
+                checked={objective === option.value}
+                onChange={() => onChange({ objective: option.value })}
+                className="sr-only"
+              />
+              <div>
+                <div className="text-xs font-medium text-neutral-900">{option.title}</div>
+                <div className="mt-0.5 text-[10px] text-neutral-500">{option.helper}</div>
+              </div>
+            </motion.label>
+          ))}
+        </div>
       </div>
 
       {/* Rotation option */}

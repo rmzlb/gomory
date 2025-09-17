@@ -16,6 +16,7 @@ import HistoryPanel from './HistoryPanel'
 import HowItWorks from './HowItWorks'
 import PieceInput from './PieceInput'
 import PositioningReport from './PositioningReport'
+import HeuristicSummary from './HeuristicSummary'
 import TestsCard from './TestsCard'
 import VerificationCard from './VerificationCard'
 
@@ -365,18 +366,20 @@ export default function CuttingOptimizer() {
                   <ExportPanel
                     result={result}
                     specs={pieces}
-                    boardWidth={config.boardWidth}
-                    boardHeight={config.boardHeight}
+                    boardWidth={result.boardWidth}
+                    boardHeight={result.boardHeight}
                   />
                 </div>
+
+                <HeuristicSummary heuristics={result.heuristics} />
 
                 {result.boards.map((board, index) => (
                   <BoardVisualizer
                     key={`board-${index}`}
                     board={board}
                     cuts={result.cuts}
-                    boardWidth={config.boardWidth}
-                    boardHeight={config.boardHeight}
+                    boardWidth={result.boardWidth}
+                    boardHeight={result.boardHeight}
                     zoom={zoom}
                     specs={pieces}
                   />
@@ -391,8 +394,8 @@ export default function CuttingOptimizer() {
                   <VerificationCard
                     result={result}
                     specs={pieces}
-                    boardWidth={config.boardWidth}
-                    boardHeight={config.boardHeight}
+                    boardWidth={result.boardWidth}
+                    boardHeight={result.boardHeight}
                   />
                 </div>
 
@@ -401,8 +404,8 @@ export default function CuttingOptimizer() {
                   <TestsCard
                     result={result}
                     specs={pieces}
-                    boardWidth={config.boardWidth}
-                    boardHeight={config.boardHeight}
+                    boardWidth={result.boardWidth}
+                    boardHeight={result.boardHeight}
                     kerf={config.kerf}
                   />
                 )}

@@ -158,6 +158,15 @@ whileHover: { scale: 1.02 }
    - Pas de polyfills inutiles
    - Target ES2022
 
+## ✅ TODO Optimisation v3.1 (Planche prioritaire)
+
+- [x] Mettre à jour `OptimizationConfig` pour inclure une stratégie de remplissage et la rotation automatique de la planche
+- [x] Adapter `validateConfiguration` pour prendre en compte les nouvelles options et les deux orientations possibles
+- [x] Refactoriser `packGuillotine` afin de remplir chaque planche existante avant d'en ouvrir une nouvelle
+- [x] Garantir que la sélection d'orientation de planche soit globale (toutes les planches identiques) en évaluant `(W,H)` et `(H,W)`
+- [x] Exposer la nouvelle stratégie dans l'UI (BoardInput + state) et mettre à jour l'affichage/export pour utiliser les dimensions réellement optimisées
+- [x] Ajouter / mettre à jour les tests unitaires pour couvrir la rotation de planche et le remplissage prioritaire de la première planche
+
 ## 🚀 Étapes de Développement
 
 ### Phase 1 : Setup (15 min)

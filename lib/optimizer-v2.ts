@@ -584,6 +584,10 @@ export function optimizeCuttingV2(
     allPieces,
     utilization: board.utilization,
     cuts,
+    boardWidth: config.boardWidth,
+    boardHeight: config.boardHeight,
+    boardOrientation: 'original' as const,
+    heuristics: [],
   }
 }
 

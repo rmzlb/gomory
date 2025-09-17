@@ -23,6 +23,10 @@ export function validateConfiguration(
     return { isValid: true, errors, warnings }
   }
 
+  const normalizedWidth = Math.min(config.boardWidth, config.boardHeight)
+  const normalizedHeight = Math.max(config.boardWidth, config.boardHeight)
+  const orientations = [{ width: normalizedWidth, height: normalizedHeight }]
+
   // Check board dimensions
   if (config.boardWidth <= 0 || config.boardHeight <= 0) {
     errors.push('Les dimensions de la planche doivent être positives')
@@ -47,19 +51,22 @@ export function validateConfiguration(
     }
 
     // Check if piece fits on board (considering rotation if allowed)
-    const fitsNormally = piece.w <= config.boardWidth && piece.h <= config.boardHeight
-    const fitsRotated =
-      config.allowRotate && piece.h <= config.boardWidth && piece.w <= config.boardHeight
+    const fitsAnyOrientation = orientations.some(({ width, height }) => {
+      const fitsNormal = piece.w <= width && piece.h <= height
+      const fitsRot = config.allowRotate && piece.h <= width && piece.w <= height
+      return fitsNormal || fitsRot
+    })
 
-    if (!fitsNormally && !fitsRotated) {
+    if (!fitsAnyOrientation) {
       errors.push(
         `Pièce ${piece.id} (${piece.w}×${piece.h}mm) trop grande pour la planche (${config.boardWidth}×${config.boardHeight}mm)`
       )
     }
 
     // Check if piece is almost as large as the board
-    const utilizationW = piece.w / config.boardWidth
-    const utilizationH = piece.h / config.boardHeight
+    const referenceOrientation = orientations[0]
+    const utilizationW = piece.w / referenceOrientation.width
+    const utilizationH = piece.h / referenceOrientation.height
     if (utilizationW > 0.95 || utilizationH > 0.95) {
       warnings.push(`Pièce ${piece.id} utilise plus de 95% de la largeur ou hauteur de la planche`)
     }
@@ -81,7 +88,7 @@ export function validateConfiguration(
       ...activePieces.map((p) => (config.allowRotate ? Math.min(p.w, p.h) : p.w))
     )
 
-    if (smallestPieceWidth * 2 > config.boardWidth) {
+    if (smallestPieceWidth * 2 > normalizedWidth) {
       warnings.push(
         'Mode deux colonnes activé mais certaines pièces sont trop larges pour tenir sur deux colonnes'
       )
